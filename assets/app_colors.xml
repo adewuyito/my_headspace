@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- App Colors -->
+    <color name="app_green">#7FA087</color>
+    <color name="app_green_2">#104423</color>
+    <color name="app_green_3">#OB2F23</color>
+    <color name="app_green_4">#OE382A</color>
+    <color name="app_orange">#Ff6600</color>
+    
+    
+    <!-- Background Colors -->
+    <color name="background">#FFFFFF</color>
+    <color name="background_dark">#141313</color>
+    <color name="surface">#FF057029</color>
+    <color name="surface_dark">#1E1E1E</color>
+    <color name="green_background">#09bc45</color>
+    
+    <!-- Text Colors -->
+    <color name="text_positive">#FFFFFF</color>
+    <color name="text_negative">#00000</color>
+    <!-- <color name="text_disabled">#BDBDBD</color>
+    <color name="text_on_primary">#FFFFFF</color> -->
+    
+    <!-- Status Colors -->
+    <color name="error">#B00020</color>
+    <color name="success">#4CAF50</color>
+    <color name="warning">#FF9800</color>
+    <color name="info">#2196F3</color>
+    
+
+</resources>
