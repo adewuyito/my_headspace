@@ -22,6 +22,12 @@ dependencies:
   # Routing
   auto_route: ^10.2.3
 
+  # Hooks
+  flutter_hooks: 0.21.3
+
+  date_field: ^6.0.3
+  flutter_svg: ^2.2.3
+
 
 
 dev_dependencies:
@@ -43,3 +49,14 @@ flutter_gen:
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - assets/icons/
+    - assets/images/
+
+  fonts:
+    - family: Montserrat
+      fonts: 
+        - asset: assets/fonts/Montserrat_V.ttf
+
+
