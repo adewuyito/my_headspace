@@ -20,6 +20,14 @@ class $AssetsIconsGen {
   /// File path: assets/icons/carat_down.svg
   SvgGenImage get caratDown => const SvgGenImage('assets/icons/carat_down.svg');
 
+  /// File path: assets/icons/carat_right.svg
+  SvgGenImage get caratRight =>
+      const SvgGenImage('assets/icons/carat_right.svg');
+
+  /// File path: assets/icons/fingerprint.svg
+  SvgGenImage get fingerprint =>
+      const SvgGenImage('assets/icons/fingerprint.svg');
+
   /// File path: assets/icons/notifications_icon.svg
   SvgGenImage get notificationsIcon =>
       const SvgGenImage('assets/icons/notifications_icon.svg');
@@ -35,6 +43,8 @@ class $AssetsIconsGen {
   /// List of all assets
   List<SvgGenImage> get values => [
     caratDown,
+    caratRight,
+    fingerprint,
     notificationsIcon,
     signupPicture,
     successCon,

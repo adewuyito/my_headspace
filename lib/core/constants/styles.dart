@@ -127,6 +127,12 @@ class _AppStyles {
     fontVariations: [FontVariation('wght', 600)],
   );
 
+  final sb20 = const TextStyle(
+    fontSize: 20,
+    height: 1.45,
+    fontVariations: [FontVariation('wght', 600)],
+  );
+
   final sb24 = const TextStyle(
     fontSize: 24,
     height: 1.45,
