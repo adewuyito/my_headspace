@@ -4,6 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_headspace/core/constants/styles.dart';
 import 'package:my_headspace/gen/assets.gen.dart';
 import 'package:my_headspace/gen/colors.gen.dart';
+import 'package:my_headspace/routes/app_navigator.dart';
+import 'package:my_headspace/routes/app_route.gr.dart';
 
 @routePage
 class RegistrationSuccessfulView extends StatelessWidget {
@@ -39,7 +41,12 @@ class RegistrationSuccessfulView extends StatelessWidget {
 
             SizedBox(height: 0.35.sh),
 
-            ElevatedButton(onPressed: () {}, child: Text("Next")),
+            ElevatedButton(
+              onPressed: () {
+                AppNavigator.of(context).replace(NotificationPermissonRoute());
+              },
+              child: Text("Next"),
+            ),
           ],
         ),
       ),

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_headspace/core/constants/styles.dart';
 import 'package:my_headspace/gen/colors.gen.dart';
+import 'package:my_headspace/routes/app_navigator.dart';
+import 'package:my_headspace/routes/app_route.gr.dart';
 import 'package:my_headspace/shared/components/rich_text/base_text.dart';
 import 'package:my_headspace/shared/components/rich_text/rich_text_widget.dart';
 import 'package:my_headspace/shared/widgets/toc_pp.dart';
@@ -69,7 +71,12 @@ class VerifyMailPage extends StatelessWidget {
 
             const SizedBox(height: 35),
 
-            ElevatedButton(onPressed: () {}, child: Text("Complete")),
+            ElevatedButton(
+              onPressed: () {
+                AppNavigator.of(context).push(RegistrationSuccessfulRoute());
+              },
+              child: Text("Complete"),
+            ),
           ],
         ),
       ),

@@ -5,8 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_headspace/core/constants/styles.dart';
+import 'package:my_headspace/features/auth/application/providers/signup_provider.dart';
 import 'package:my_headspace/gen/assets.gen.dart';
 import 'package:my_headspace/gen/colors.gen.dart';
+import 'package:my_headspace/routes/app_navigator.dart';
+import 'package:my_headspace/routes/app_route.gr.dart';
+import 'package:my_headspace/service/service_locator.dart';
 import 'package:my_headspace/shared/widgets/shared_textfield.dart';
 import 'package:my_headspace/shared/widgets/toc_pp.dart';
 
@@ -16,16 +20,16 @@ class CreateAccountPage2 extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    // ~ Text Controller
-    final _firstName = useTextEditingController();
-    final _lastName = useTextEditingController();
-    final _phoneNumber = useTextEditingController();
+    final signupProvider = serviceLocator.getIt<SignupProvider>();
 
     return Scaffold(
       appBar: AppBar(
+        leading: AutoLeadingButton(),
         actions: [
           TextButton(
-            onPressed: () {},
+            onPressed: () {
+              AppNavigator.of(context).push(LoginRoute());
+            },
             child: Text(
               "Log in",
               style: hpStyles.b16.copyWith(color: ColorName.appOrange),
@@ -52,7 +56,9 @@ class CreateAccountPage2 extends HookWidget {
 
                 SizedBox(height: 37.h),
 
-                Assets.icons.signupPicture.svg(),
+                Center(
+                  child: Assets.images.signupImage.image(width: 93, height: 93),
+                ),
 
                 SizedBox(height: 23.h),
 
@@ -61,22 +67,22 @@ class CreateAccountPage2 extends HookWidget {
                     spacing: 29,
                     children: [
                       FromTextInputField(
-                        controller: _firstName,
+                        controller: signupProvider.usernameNameController,
                         label: "Username",
                       ),
 
                       FromTextInputField(
-                        controller: _lastName,
+                        controller: signupProvider.emailController,
                         label: "Email address",
                       ),
 
                       FromTextInputField(
-                        controller: _phoneNumber,
+                        controller: signupProvider.passwordController,
                         label: "Password",
                       ),
 
                       FromTextInputField(
-                        controller: _phoneNumber,
+                        controller: signupProvider.confirmPasswordController,
                         label: "Confirm Password",
                       ),
                     ],
@@ -87,10 +93,15 @@ class CreateAccountPage2 extends HookWidget {
             Spacer(),
 
             TocPp(),
-            
+
             const SizedBox(height: 35),
 
-            ElevatedButton(onPressed: () {}, child: Text("Agree and continue")),
+            ElevatedButton(
+              onPressed: () {
+                AppNavigator.of(context).push(VerifyMailRoute());
+              },
+              child: Text("Agree and continue"),
+            ),
           ],
         ),
       ),

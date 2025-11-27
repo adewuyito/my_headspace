@@ -52,7 +52,12 @@ class BiometricPermissonPage extends StatelessWidget {
 
             SizedBox(height: 0.25.sh),
 
-            ElevatedButton(onPressed: () {}, child: Text("Next")),
+            ElevatedButton(
+              onPressed: () {
+                // TODO! get user permission then navigate
+              },
+              child: Text("Next"),
+            ),
 
             const SizedBox(height: 30),
 

@@ -1,12 +1,16 @@
 // ignore_for_file: no_leading_underscores_for_local_identifiers
-
-import 'package:auto_route/annotations.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:date_field/date_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:my_headspace/core/constants/styles.dart';
+import 'package:my_headspace/features/auth/application/enums/user_gender_enum.dart';
+import 'package:my_headspace/features/auth/application/providers/signup_provider.dart';
 import 'package:my_headspace/gen/assets.gen.dart';
 import 'package:my_headspace/gen/colors.gen.dart';
+import 'package:my_headspace/routes/app_navigator.dart';
+import 'package:my_headspace/routes/app_route.gr.dart';
+import 'package:my_headspace/service/service_locator.dart';
 import 'package:my_headspace/shared/widgets/shared_textfield.dart';
 
 @routePage
@@ -16,15 +20,16 @@ class CreateAccountPage1 extends HookWidget {
   @override
   Widget build(BuildContext context) {
     // ~ Text Controller
-    final _firstName = useTextEditingController();
-    final _lastName = useTextEditingController();
-    final _phoneNumber = useTextEditingController();
+    final signupProvider = serviceLocator.getIt<SignupProvider>();
 
     return Scaffold(
       appBar: AppBar(
+        leading: AutoLeadingButton(),
         actions: [
           TextButton(
-            onPressed: () {},
+            onPressed: () {
+              AppNavigator.of(context).push(LoginRoute());
+            },
             child: Text(
               "Log in",
               style: hpStyles.b16.copyWith(color: ColorName.appOrange),
@@ -56,11 +61,11 @@ class CreateAccountPage1 extends HookWidget {
                     spacing: 29,
                     children: [
                       FromTextInputField(
-                        controller: _firstName,
+                        controller: signupProvider.firstNameController,
                         label: "Enter first name",
                       ),
                       FromTextInputField(
-                        controller: _lastName,
+                        controller: signupProvider.lastNameController,
                         label: "Enter last name",
                       ),
 
@@ -82,11 +87,11 @@ class CreateAccountPage1 extends HookWidget {
                         ),
                         initialPickerDateTime: DateTime.now(),
                         onChanged: (DateTime? value) {
-                          // selectedDate = value;
+                          signupProvider.userAgeController = value;
                         },
                       ),
 
-                      DropdownMenuFormField(
+                      DropdownMenuFormField<UserGender>(
                         width: double.infinity,
                         label: Text(
                           "Gender",
@@ -95,13 +100,22 @@ class CreateAccountPage1 extends HookWidget {
                           ),
                         ),
                         trailingIcon: Assets.icons.caratDown.svg(),
+                        onSelected: (gender) {
+                          signupProvider.userGenderController = gender;
+                        },
                         selectedTrailingIcon: RotatedBox(
                           quarterTurns: 2,
                           child: Assets.icons.caratDown.svg(),
                         ),
                         dropdownMenuEntries: [
-                          DropdownMenuEntry(value: 'T', label: "Male"),
-                          DropdownMenuEntry(value: 'T', label: "Female"),
+                          DropdownMenuEntry(
+                            value: UserGender.male,
+                            label: "Male",
+                          ),
+                          DropdownMenuEntry(
+                            value: UserGender.female,
+                            label: "Female",
+                          ),
                         ],
                         menuStyle: MenuStyle(
                           backgroundColor: WidgetStateProperty.all(
@@ -117,7 +131,7 @@ class CreateAccountPage1 extends HookWidget {
                       ),
 
                       FromTextInputField(
-                        controller: _phoneNumber,
+                        controller: signupProvider.phoneNumberController,
                         label: "Phone no (optional)",
                       ),
                     ],
@@ -129,8 +143,10 @@ class CreateAccountPage1 extends HookWidget {
             //   child: ,
             // )
             ElevatedButton(
-              onPressed: () {},
-              child: Text("Next" ),
+              onPressed: () {
+                AppNavigator.of(context).push(CreateAccountRoute2());
+              },
+              child: Text("Next"),
             ),
           ],
         ),
@@ -138,4 +154,3 @@ class CreateAccountPage1 extends HookWidget {
     );
   }
 }
-

@@ -20,6 +20,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/carat_down.svg
   SvgGenImage get caratDown => const SvgGenImage('assets/icons/carat_down.svg');
 
+  /// File path: assets/icons/carat_left.svg
+  SvgGenImage get caratLeft => const SvgGenImage('assets/icons/carat_left.svg');
+
   /// File path: assets/icons/carat_right.svg
   SvgGenImage get caratRight =>
       const SvgGenImage('assets/icons/carat_right.svg');
@@ -32,9 +35,9 @@ class $AssetsIconsGen {
   SvgGenImage get notificationsIcon =>
       const SvgGenImage('assets/icons/notifications_icon.svg');
 
-  /// File path: assets/icons/signup_picture.svg
-  SvgGenImage get signupPicture =>
-      const SvgGenImage('assets/icons/signup_picture.svg');
+  /// File path: assets/icons/signup_icon.svg
+  SvgGenImage get signupIcon =>
+      const SvgGenImage('assets/icons/signup_icon.svg');
 
   /// File path: assets/icons/success_con.svg
   SvgGenImage get successCon =>
@@ -43,10 +46,11 @@ class $AssetsIconsGen {
   /// List of all assets
   List<SvgGenImage> get values => [
     caratDown,
+    caratLeft,
     caratRight,
     fingerprint,
     notificationsIcon,
-    signupPicture,
+    signupIcon,
     successCon,
   ];
 }
@@ -62,8 +66,16 @@ class $AssetsImagesGen {
   AssetGenImage get biometricImage2 =>
       const AssetGenImage('assets/images/biometric_image_2.png');
 
+  /// File path: assets/images/signup_image.png
+  AssetGenImage get signupImage =>
+      const AssetGenImage('assets/images/signup_image.png');
+
   /// List of all assets
-  List<AssetGenImage> get values => [biometricImage, biometricImage2];
+  List<AssetGenImage> get values => [
+    biometricImage,
+    biometricImage2,
+    signupImage,
+  ];
 }
 
 class Assets {

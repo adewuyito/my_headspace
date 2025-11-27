@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:my_headspace/app.dart';
-import 'package:my_headspace/features/auth/data/auth_provider.dart';
+import 'package:my_headspace/features/auth/application/providers/reset_password_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:my_headspace/routes/app_route.dart';
 import 'package:my_headspace/routes/app_route_guard.dart';
 import 'package:my_headspace/service/service_locator.dart';
-import 'package:provider/provider.dart';
+import 'package:my_headspace/features/auth/data/auth_provider.dart';
+import 'package:my_headspace/features/auth/application/providers/login_provider.dart';
+import 'package:my_headspace/features/auth/application/providers/signup_provider.dart';
 
 void main() {
   serviceLocator.configure();
@@ -14,6 +17,22 @@ void main() {
       providers: [
         //
         Provider(create: (context) => serviceLocator.getIt<AuthGuard>()),
+
+        ChangeNotifierProvider(
+          create: (context) => serviceLocator.getIt<SignupProvider>(),
+        ),
+
+        ChangeNotifierProvider(
+          create: (context) => serviceLocator.getIt<LoginProvider>(),
+        ),
+
+        ChangeNotifierProvider(
+          create: (context) => serviceLocator.getIt<ResetPasswordProvider>(),
+        ),
+
+        ChangeNotifierProvider(
+          create: (context) => serviceLocator.getIt<AuthProvider>(),
+        ),
 
         ChangeNotifierProxyProvider<AuthGuard, AppRouter>(
           create: (context) {
@@ -27,10 +46,6 @@ void main() {
             }
             return AppRouter(authGuard: guard);
           },
-        ),
-
-        ChangeNotifierProvider(
-          create: (context) => serviceLocator.getIt<AuthProvider>(),
         ),
       ],
       child: const MainApp(),

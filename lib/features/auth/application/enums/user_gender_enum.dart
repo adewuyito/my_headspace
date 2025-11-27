@@ -1,0 +1,2 @@
+
+enum UserGender { male, female }

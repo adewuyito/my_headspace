@@ -28,11 +28,12 @@ class AppRouter extends RootStackRouter {
 
   @override
   List<AutoRoute> get routes => [
-    AutoRoute(page: GetStartedRoute.page),
-    
+    AutoRoute(initial: true, page: GetStartedRoute.page),
+
     AutoRoute(page: CreateAccountRoute1.page),
     AutoRoute(page: CreateAccountRoute2.page),
     AutoRoute(page: VerifyMailRoute.page),
+
     AutoRoute(page: RegistrationSuccessfulRoute.page),
     AutoRoute(page: NotificationPermissonRoute.page),
     AutoRoute(page: BiometricPermissonRoute.page),
@@ -40,7 +41,7 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: ResetPasswordRoute.page),
 
     AutoRoute(
-      initial: true,
+      // initial: true,
       page: OnboardingTabviewRoute.page,
       children: [
         AutoRoute(page: OnboardingFirstTabRoute.page),

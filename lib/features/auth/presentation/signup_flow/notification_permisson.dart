@@ -4,6 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_headspace/core/constants/styles.dart';
 import 'package:my_headspace/gen/assets.gen.dart';
 import 'package:my_headspace/gen/colors.gen.dart';
+import 'package:my_headspace/routes/app_navigator.dart';
+import 'package:my_headspace/routes/app_route.gr.dart';
 
 @routePage
 class NotificationPermissonPage extends StatelessWidget {
@@ -48,12 +50,19 @@ class NotificationPermissonPage extends StatelessWidget {
 
             SizedBox(height: 0.25.sh),
 
-            ElevatedButton(onPressed: () {}, child: Text("Next")),
+            ElevatedButton(
+              onPressed: () {
+                // TODO! get user permission then navigate
+              },
+              child: Text("Next"),
+            ),
 
             const SizedBox(height: 30),
 
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+                AppNavigator.of(context).push(BiometricPermissonRoute());
+              },
               child: Text(
                 "Maybe later",
                 style: hpStyles.sb16.copyWith(color: ColorName.appOrange),

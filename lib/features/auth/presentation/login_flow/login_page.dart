@@ -2,8 +2,12 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:my_headspace/core/constants/styles.dart';
+import 'package:my_headspace/features/auth/application/providers/login_provider.dart';
 import 'package:my_headspace/gen/assets.gen.dart';
 import 'package:my_headspace/gen/colors.gen.dart';
+import 'package:my_headspace/routes/app_navigator.dart';
+import 'package:my_headspace/routes/app_route.gr.dart';
+import 'package:my_headspace/service/service_locator.dart';
 import 'package:my_headspace/shared/components/rich_text/base_text.dart';
 import 'package:my_headspace/shared/components/rich_text/rich_text_widget.dart';
 import 'package:my_headspace/shared/widgets/shared_textfield.dart';
@@ -15,11 +19,10 @@ class LoginPage extends HookWidget {
   @override
   Widget build(BuildContext context) {
     // ~ Text Controller
-    final _firstName = useTextEditingController();
-    final _lastName = useTextEditingController();
+    final loginProvider = serviceLocator.getIt<LoginProvider>();
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(leading: AutoLeadingButton()),
       body: Padding(
         padding:
             const EdgeInsets.symmetric(horizontal: 38.0) +
@@ -43,11 +46,11 @@ class LoginPage extends HookWidget {
                     spacing: 29,
                     children: [
                       FromTextInputField(
-                        controller: _firstName,
+                        controller: loginProvider.emailController,
                         label: "Email address",
                       ),
                       FromTextInputField(
-                        controller: _lastName,
+                        controller: loginProvider.passwordController,
                         label: "Password",
                       ),
                     ],
@@ -84,11 +87,13 @@ class LoginPage extends HookWidget {
               styleForAll: hpStyles.r14.copyWith(letterSpacing: -.1),
               texts: [
                 BaseText.plain(
-                  text: "Don’t have an account? ",
+                  text: "Don't have an account? ",
                   style: hpStyles.r14.copyWith(color: Color(0xFF667185)),
                 ),
                 BaseText.link(
-                  onTapped: () {},
+                  onTapped: () {
+                    AppNavigator.of(context).push(CreateAccountRoute1());
+                  },
                   text: "Create account",
                   style: hpStyles.m14.copyWith(color: ColorName.appOrange),
                 ),
