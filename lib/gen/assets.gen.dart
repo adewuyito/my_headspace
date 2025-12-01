@@ -31,9 +31,24 @@ class $AssetsIconsGen {
   SvgGenImage get fingerprint =>
       const SvgGenImage('assets/icons/fingerprint.svg');
 
+  /// File path: assets/icons/heart_icon.svg
+  SvgGenImage get heartIcon => const SvgGenImage('assets/icons/heart_icon.svg');
+
+  /// File path: assets/icons/like_icon.svg
+  SvgGenImage get likeIcon => const SvgGenImage('assets/icons/like_icon.svg');
+
+  /// File path: assets/icons/minus_icon.svg
+  SvgGenImage get minusIcon => const SvgGenImage('assets/icons/minus_icon.svg');
+
   /// File path: assets/icons/notifications_icon.svg
   SvgGenImage get notificationsIcon =>
       const SvgGenImage('assets/icons/notifications_icon.svg');
+
+  /// File path: assets/icons/plus_icon.svg
+  SvgGenImage get plusIcon => const SvgGenImage('assets/icons/plus_icon.svg');
+
+  /// File path: assets/icons/share_icon.svg
+  SvgGenImage get shareIcon => const SvgGenImage('assets/icons/share_icon.svg');
 
   /// File path: assets/icons/signup_icon.svg
   SvgGenImage get signupIcon =>
@@ -43,15 +58,24 @@ class $AssetsIconsGen {
   SvgGenImage get successCon =>
       const SvgGenImage('assets/icons/success_con.svg');
 
+  /// File path: assets/icons/timer_icon.svg
+  SvgGenImage get timerIcon => const SvgGenImage('assets/icons/timer_icon.svg');
+
   /// List of all assets
   List<SvgGenImage> get values => [
     caratDown,
     caratLeft,
     caratRight,
     fingerprint,
+    heartIcon,
+    likeIcon,
+    minusIcon,
     notificationsIcon,
+    plusIcon,
+    shareIcon,
     signupIcon,
     successCon,
+    timerIcon,
   ];
 }
 

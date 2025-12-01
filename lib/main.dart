@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_headspace/app.dart';
 import 'package:my_headspace/features/auth/application/providers/reset_password_provider.dart';
+import 'package:my_headspace/features/home/application/providers/personalisation_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:my_headspace/routes/app_route.dart';
 import 'package:my_headspace/routes/app_route_guard.dart';
@@ -15,7 +16,8 @@ void main() {
   runApp(
     MultiProvider(
       providers: [
-        //
+        ChangeNotifierProvider(create: (_) => serviceLocator.getIt<PersonalisationProvider>()),
+
         Provider(create: (context) => serviceLocator.getIt<AuthGuard>()),
 
         ChangeNotifierProvider(

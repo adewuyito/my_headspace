@@ -121,6 +121,13 @@ class _AppStyles {
     fontVariations: [FontVariation('wght', 600)],
   );
 
+  final sb15 = const TextStyle(
+    fontSize: 15,
+    height: 1.45,
+    fontVariations: [FontVariation('wght', 600)],
+  );
+
+
   final sb16 = const TextStyle(
     fontSize: 16,
     height: 1.45,
@@ -144,6 +151,13 @@ class _AppStyles {
     height: 1.45,
     fontVariations: [FontVariation('wght', 600)],
   );
+
+  final sb25 = const TextStyle(
+    fontSize: 25,
+    height: 1.45,
+    fontVariations: [FontVariation('wght', 600)],
+  );
+
 
   //  ~ Bold Style
   final b9 = const TextStyle(

@@ -3,6 +3,7 @@ import 'package:my_headspace/features/auth/application/providers/login_provider.
 import 'package:my_headspace/features/auth/application/providers/reset_password_provider.dart';
 import 'package:my_headspace/features/auth/application/providers/signup_provider.dart';
 import 'package:my_headspace/features/auth/data/auth_provider.dart';
+import 'package:my_headspace/features/home/application/providers/personalisation_provider.dart';
 import 'package:my_headspace/routes/app_route_guard.dart';
 
 class ServiceLocator {
@@ -18,6 +19,7 @@ class ServiceLocator {
 
     _getit.registerFactory<ResetPasswordProvider>(() => ResetPasswordProvider());
     
+    _getit.registerLazySingleton<PersonalisationProvider>(() => PersonalisationProvider());
     _getit.registerLazySingleton<SignupProvider>(() => SignupProvider());
     _getit.registerLazySingleton<LoginProvider>(() => LoginProvider());
   }
