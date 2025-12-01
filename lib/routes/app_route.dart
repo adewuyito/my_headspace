@@ -33,6 +33,12 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: HomeRoute.page),
     AutoRoute(page: PersonalisationRoute.page),
 
+    AutoRoute(
+      initial: true,
+      page: ApplicationNavigatorRoute.page,
+      children: [AutoRoute(page: HomeRoute.page)],
+    ),
+
     // ~ Permission View
     AutoRoute(page: NotificationPermissonRoute.page),
     AutoRoute(page: BiometricPermissonRoute.page),
@@ -44,7 +50,6 @@ class AppRouter extends RootStackRouter {
     // ~ Login View
     AutoRoute(page: LoginRoute.page),
 
-
     // ~ Create Account View
     AutoRoute(page: CreateAccountRoute1.page),
     AutoRoute(page: CreateAccountRoute2.page),
@@ -54,7 +59,7 @@ class AppRouter extends RootStackRouter {
 
     // ~ Onboarding PageView
     AutoRoute(
-      initial: true,
+      // initial: true,
       page: OnboardingTabviewRoute.page,
       children: [
         AutoRoute(page: OnboardingFirstTabRoute.page),

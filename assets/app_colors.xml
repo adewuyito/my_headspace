@@ -16,6 +16,7 @@
     <color name="surface_dark">#1E1E1E</color>
     <color name="green_background">#09bc45</color>
     <color name="border_grey">#7A7A7D</color>
+    <color name="bottom_nav">#E5E5E5B8</color>
     
     <!-- Text Colors -->
     <color name="text_positive">#FFFFFF</color>

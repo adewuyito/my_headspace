@@ -32,6 +32,9 @@ class ColorName {
   /// Color: #7A7A7D
   static const Color borderGrey = Color(0xFF7A7A7D);
 
+  /// Color: #E5E5E5B8
+  static const Color bottomNav = Color(0xE5E5E5B8);
+
   /// Color: #B00020
   static const Color error = Color(0xFFB00020);
 

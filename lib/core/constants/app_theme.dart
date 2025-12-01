@@ -15,6 +15,15 @@ final inputBorderBase = OutlineInputBorder(
 
 final ThemeData headspaceTheme = baseTheme.copyWith(
   scaffoldBackgroundColor: ColorName.background,
+  bottomNavigationBarTheme: BottomNavigationBarThemeData(
+    unselectedIconTheme: IconThemeData(color: Color.fromARGB(1, 0, 33, 22)),
+    selectedIconTheme: IconThemeData(color: Color.fromARGB(1, 0, 33, 22)),
+    unselectedLabelStyle: hpStyles.m13.copyWith(color: Color(0xFF002116)),
+    selectedLabelStyle: hpStyles.m13.copyWith(color: Color(0xFF002116)),
+    showSelectedLabels: true,
+    showUnselectedLabels: true,
+    backgroundColor: ColorName.bottomNav,
+  ),
   // primaryColor: appColors.blue,
   appBarTheme: AppBarTheme(
     // backgroundColor: appColors.white,
