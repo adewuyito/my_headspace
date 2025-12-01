@@ -4,9 +4,10 @@ import 'package:auto_route/auto_route.dart';
 
 import 'app_route.gr.dart';
 
-// final cudddleRouteProvider = Provider<CuddleRouter>((ref) {
-//   return CuddleRouter(authGuard: ref.watch(authGuardProvider));
-// });
+/* 
+ Flow: 
+ ! Onboarding -> Get-started -> CreatAccount -> Login -> Home 
+*/
 
 class TransitionsBuilder {
   static Widget fadeTransition(
@@ -28,23 +29,32 @@ class AppRouter extends RootStackRouter {
 
   @override
   List<AutoRoute> get routes => [
-    AutoRoute(page: GetStartedRoute.page),
+    // ~ Home View
+    AutoRoute(page: HomeRoute.page),
+    AutoRoute(page: PersonalisationRoute.page),
 
-    AutoRoute( page: HomeRoute.page),
-    AutoRoute(initial: true, page: PersonalisationRoute.page),
-
-    AutoRoute(page: CreateAccountRoute1.page),
-    AutoRoute(page: CreateAccountRoute2.page),
-    AutoRoute(page: VerifyMailRoute.page),
-
-    AutoRoute(page: RegistrationSuccessfulRoute.page),
+    // ~ Permission View
     AutoRoute(page: NotificationPermissonRoute.page),
     AutoRoute(page: BiometricPermissonRoute.page),
-    AutoRoute(page: LoginRoute.page),
+
+    // ~ Utility View
+    AutoRoute(page: VerifyMailRoute.page),
     AutoRoute(page: ResetPasswordRoute.page),
 
+    // ~ Login View
+    AutoRoute(page: LoginRoute.page),
+
+
+    // ~ Create Account View
+    AutoRoute(page: CreateAccountRoute1.page),
+    AutoRoute(page: CreateAccountRoute2.page),
+    AutoRoute(page: RegistrationSuccessfulRoute.page),
+
+    AutoRoute(page: GetStartedRoute.page),
+
+    // ~ Onboarding PageView
     AutoRoute(
-      // initial: true,
+      initial: true,
       page: OnboardingTabviewRoute.page,
       children: [
         AutoRoute(page: OnboardingFirstTabRoute.page),

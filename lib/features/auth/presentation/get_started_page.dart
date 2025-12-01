@@ -71,7 +71,9 @@ class GetStartedPage extends StatelessWidget {
                       ),
                     ),
                     BaseText.link(
-                      onTapped: () {},
+                      onTapped: () {
+                        AppNavigator.of(context).push(LoginRoute());
+                      },
                       text: "Log in",
                       style: hpStyles.m14.copyWith(color: ColorName.appOrange),
                     ),

@@ -4,6 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_headspace/core/constants/styles.dart';
 import 'package:my_headspace/gen/assets.gen.dart';
 import 'package:my_headspace/gen/colors.gen.dart';
+import 'package:my_headspace/routes/app_navigator.dart';
+import 'package:my_headspace/routes/app_route.gr.dart';
 
 @routePage
 class BiometricPermissonPage extends StatelessWidget {
@@ -55,6 +57,8 @@ class BiometricPermissonPage extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 // TODO! get user permission then navigate
+
+                AppNavigator.of(context).push(HomeRoute());
               },
               child: Text("Next"),
             ),
