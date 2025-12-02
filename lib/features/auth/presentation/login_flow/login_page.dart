@@ -74,7 +74,14 @@ class LoginPage extends HookWidget {
             Row(
               children: [
                 Expanded(
-                  child: ElevatedButton(onPressed: () {}, child: Text("Next")),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      AppNavigator.of(
+                        context,
+                      ).push(ApplicationNavigatorRoute());
+                    },
+                    child: Text("Next"),
+                  ),
                 ),
                 const SizedBox(width: 25),
                 Assets.icons.fingerprint.svg(),

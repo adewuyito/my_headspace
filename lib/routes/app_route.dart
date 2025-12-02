@@ -34,7 +34,6 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: PersonalisationRoute.page),
 
     AutoRoute(
-      initial: true,
       page: ApplicationNavigatorRoute.page,
       children: [AutoRoute(page: HomeRoute.page)],
     ),
@@ -59,7 +58,7 @@ class AppRouter extends RootStackRouter {
 
     // ~ Onboarding PageView
     AutoRoute(
-      // initial: true,
+      initial: true,
       page: OnboardingTabviewRoute.page,
       children: [
         AutoRoute(page: OnboardingFirstTabRoute.page),

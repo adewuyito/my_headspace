@@ -58,7 +58,7 @@ class BiometricPermissonPage extends StatelessWidget {
               onPressed: () {
                 // TODO! get user permission then navigate
 
-                AppNavigator.of(context).push(HomeRoute());
+                AppNavigator.of(context).push(ApplicationNavigatorRoute());
               },
               child: Text("Next"),
             ),

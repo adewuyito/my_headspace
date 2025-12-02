@@ -24,7 +24,7 @@ class PersonalisationProvider extends ChangeNotifier {
   }
 
   void updateDayFrequencyDown() {
-    if (dayFrequency <= 0) return;
+    if (dayFrequency <= 1) return;
     dayFrequency--;
     notifyListeners();
   }

@@ -1,7 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-// import 'package:flutter/material.dart';
 import 'package:my_headspace/core/constants/spacing.dart';
 import 'package:my_headspace/core/constants/styles.dart';
 import 'package:my_headspace/gen/assets.gen.dart';
@@ -14,23 +13,28 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: false,
-        leading: CircleAvatar(),
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text("Good morning ⛅️", style: hpStyles.r14),
-            Text("Emmanual", style: hpStyles.m15),
-          ],
-        ),
-      ),
       body: Padding(
         padding: AppPadding.scaffoldSpacing,
         child: SingleChildScrollView(
           child: Column(
             children: [
+              Padding(
+                padding: const EdgeInsets.only(top: kToolbarHeight, bottom: 15),
+                child: Row(
+                  spacing: 12,
+                  children: [
+                    CircleAvatar(radius: 27.5),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text("Good morning ⛅️", style: hpStyles.l15),
+                        Text("Emmanual", style: hpStyles.m15),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
               Container(
                 padding: const EdgeInsets.fromLTRB(23, 21, 23, 18),
                 width: 345.w,
