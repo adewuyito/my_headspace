@@ -35,7 +35,10 @@ class AppRouter extends RootStackRouter {
 
     AutoRoute(
       page: ApplicationNavigatorRoute.page,
-      children: [AutoRoute(page: HomeRoute.page)],
+      children: [
+        AutoRoute(page: HomeRoute.page),
+        AutoRoute(page: ProfileVeiw.page),
+      ],
     ),
 
     // ~ Permission View

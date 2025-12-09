@@ -5,6 +5,7 @@ class ResetPasswordProvider extends ChangeNotifier {
 
   @override
   void dispose() {
+    debugPrint("Service Disposed");
     emailController.dispose();
     super.dispose();
   }

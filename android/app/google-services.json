@@ -1,0 +1,67 @@
+{
+  "project_info": {
+    "project_number": "1057759872334",
+    "project_id": "d-whales",
+    "storage_bucket": "d-whales.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1057759872334:android:7970887927889c0d380a1f",
+        "android_client_info": {
+          "package_name": "com.example.d_whales"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADPILDgSKT0NzN4zNjYgmoIt8z-_MgbQY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1057759872334:android:ebb2c549a09213fd380a1f",
+        "android_client_info": {
+          "package_name": "com.example.my_headspace"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADPILDgSKT0NzN4zNjYgmoIt8z-_MgbQY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1057759872334:android:53ca24b82a431993380a1f",
+        "android_client_info": {
+          "package_name": "com.example.simple_chat_bot"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADPILDgSKT0NzN4zNjYgmoIt8z-_MgbQY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
