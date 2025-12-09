@@ -1,3 +1,5 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:my_headspace/firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:my_headspace/app.dart';
 import 'package:my_headspace/features/auth/application/providers/reset_password_provider.dart';
@@ -10,13 +12,20 @@ import 'package:my_headspace/features/auth/data/auth_provider.dart';
 import 'package:my_headspace/features/auth/application/providers/login_provider.dart';
 import 'package:my_headspace/features/auth/application/providers/signup_provider.dart';
 
-void main() {
+// 05643513-e77b-4d10-8df2-17c13db6142b
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   serviceLocator.configure();
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => serviceLocator.getIt<PersonalisationProvider>()),
+        ChangeNotifierProvider(
+          create: (_) => serviceLocator.getIt<PersonalisationProvider>(),
+        ),
 
         Provider(create: (context) => serviceLocator.getIt<AuthGuard>()),
 
