@@ -9,7 +9,9 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:auto_route/auto_route.dart' as _i18;
+import 'package:auto_route/auto_route.dart' as _i20;
+import 'package:flutter/foundation.dart' as _i21;
+import 'package:flutter/material.dart' as _i22;
 import 'package:my_headspace/features/auth/presentation/get_started_page.dart'
     as _i5;
 import 'package:my_headspace/features/auth/presentation/login_flow/login_page.dart'
@@ -34,8 +36,12 @@ import 'package:my_headspace/features/auth/presentation/signup_flow/notification
     as _i8;
 import 'package:my_headspace/features/auth/presentation/signup_flow/registration_successful.dart'
     as _i15;
-import 'package:my_headspace/features/auth/presentation/verify_mail.dart'
+import 'package:my_headspace/features/auth/presentation/signup_flow/signup_tabview.dart'
     as _i17;
+import 'package:my_headspace/features/auth/presentation/splash_view.dart'
+    as _i18;
+import 'package:my_headspace/features/auth/presentation/verify_mail.dart'
+    as _i19;
 import 'package:my_headspace/features/home/presentation/home_view.dart' as _i6;
 import 'package:my_headspace/features/home/presentation/personalisation.dart'
     as _i13;
@@ -46,13 +52,13 @@ import 'package:my_headspace/features/profile/presentation/profile_veiw.dart'
 
 /// generated route for
 /// [_i1.ApplicationNavigatorView]
-class ApplicationNavigatorRoute extends _i18.PageRouteInfo<void> {
-  const ApplicationNavigatorRoute({List<_i18.PageRouteInfo>? children})
+class ApplicationNavigatorRoute extends _i20.PageRouteInfo<void> {
+  const ApplicationNavigatorRoute({List<_i20.PageRouteInfo>? children})
     : super(ApplicationNavigatorRoute.name, initialChildren: children);
 
   static const String name = 'ApplicationNavigatorRoute';
 
-  static _i18.PageInfo page = _i18.PageInfo(
+  static _i20.PageInfo page = _i20.PageInfo(
     name,
     builder: (data) {
       return const _i1.ApplicationNavigatorView();
@@ -62,13 +68,13 @@ class ApplicationNavigatorRoute extends _i18.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i2.BiometricPermissonPage]
-class BiometricPermissonRoute extends _i18.PageRouteInfo<void> {
-  const BiometricPermissonRoute({List<_i18.PageRouteInfo>? children})
+class BiometricPermissonRoute extends _i20.PageRouteInfo<void> {
+  const BiometricPermissonRoute({List<_i20.PageRouteInfo>? children})
     : super(BiometricPermissonRoute.name, initialChildren: children);
 
   static const String name = 'BiometricPermissonRoute';
 
-  static _i18.PageInfo page = _i18.PageInfo(
+  static _i20.PageInfo page = _i20.PageInfo(
     name,
     builder: (data) {
       return const _i2.BiometricPermissonPage();
@@ -78,13 +84,13 @@ class BiometricPermissonRoute extends _i18.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i3.CreateAccountPage1]
-class CreateAccountRoute1 extends _i18.PageRouteInfo<void> {
-  const CreateAccountRoute1({List<_i18.PageRouteInfo>? children})
+class CreateAccountRoute1 extends _i20.PageRouteInfo<void> {
+  const CreateAccountRoute1({List<_i20.PageRouteInfo>? children})
     : super(CreateAccountRoute1.name, initialChildren: children);
 
   static const String name = 'CreateAccountRoute1';
 
-  static _i18.PageInfo page = _i18.PageInfo(
+  static _i20.PageInfo page = _i20.PageInfo(
     name,
     builder: (data) {
       return const _i3.CreateAccountPage1();
@@ -94,13 +100,13 @@ class CreateAccountRoute1 extends _i18.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i4.CreateAccountPage2]
-class CreateAccountRoute2 extends _i18.PageRouteInfo<void> {
-  const CreateAccountRoute2({List<_i18.PageRouteInfo>? children})
+class CreateAccountRoute2 extends _i20.PageRouteInfo<void> {
+  const CreateAccountRoute2({List<_i20.PageRouteInfo>? children})
     : super(CreateAccountRoute2.name, initialChildren: children);
 
   static const String name = 'CreateAccountRoute2';
 
-  static _i18.PageInfo page = _i18.PageInfo(
+  static _i20.PageInfo page = _i20.PageInfo(
     name,
     builder: (data) {
       return const _i4.CreateAccountPage2();
@@ -110,29 +116,62 @@ class CreateAccountRoute2 extends _i18.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i5.GetStartedPage]
-class GetStartedRoute extends _i18.PageRouteInfo<void> {
-  const GetStartedRoute({List<_i18.PageRouteInfo>? children})
-    : super(GetStartedRoute.name, initialChildren: children);
+class GetStartedRoute extends _i20.PageRouteInfo<GetStartedRouteArgs> {
+  GetStartedRoute({
+    _i21.Key? key,
+    _i22.VoidCallback? authSuccess,
+    List<_i20.PageRouteInfo>? children,
+  }) : super(
+         GetStartedRoute.name,
+         args: GetStartedRouteArgs(key: key, authSuccess: authSuccess),
+         initialChildren: children,
+       );
 
   static const String name = 'GetStartedRoute';
 
-  static _i18.PageInfo page = _i18.PageInfo(
+  static _i20.PageInfo page = _i20.PageInfo(
     name,
     builder: (data) {
-      return const _i5.GetStartedPage();
+      final args = data.argsAs<GetStartedRouteArgs>(
+        orElse: () => const GetStartedRouteArgs(),
+      );
+      return _i5.GetStartedPage(key: args.key, authSuccess: args.authSuccess);
     },
   );
 }
 
+class GetStartedRouteArgs {
+  const GetStartedRouteArgs({this.key, this.authSuccess});
+
+  final _i21.Key? key;
+
+  final _i22.VoidCallback? authSuccess;
+
+  @override
+  String toString() {
+    return 'GetStartedRouteArgs{key: $key, authSuccess: $authSuccess}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! GetStartedRouteArgs) return false;
+    return key == other.key && authSuccess == other.authSuccess;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ authSuccess.hashCode;
+}
+
 /// generated route for
 /// [_i6.HomeView]
-class HomeRoute extends _i18.PageRouteInfo<void> {
-  const HomeRoute({List<_i18.PageRouteInfo>? children})
+class HomeRoute extends _i20.PageRouteInfo<void> {
+  const HomeRoute({List<_i20.PageRouteInfo>? children})
     : super(HomeRoute.name, initialChildren: children);
 
   static const String name = 'HomeRoute';
 
-  static _i18.PageInfo page = _i18.PageInfo(
+  static _i20.PageInfo page = _i20.PageInfo(
     name,
     builder: (data) {
       return const _i6.HomeView();
@@ -142,13 +181,13 @@ class HomeRoute extends _i18.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i7.LoginPage]
-class LoginRoute extends _i18.PageRouteInfo<void> {
-  const LoginRoute({List<_i18.PageRouteInfo>? children})
+class LoginRoute extends _i20.PageRouteInfo<void> {
+  const LoginRoute({List<_i20.PageRouteInfo>? children})
     : super(LoginRoute.name, initialChildren: children);
 
   static const String name = 'LoginRoute';
 
-  static _i18.PageInfo page = _i18.PageInfo(
+  static _i20.PageInfo page = _i20.PageInfo(
     name,
     builder: (data) {
       return const _i7.LoginPage();
@@ -158,13 +197,13 @@ class LoginRoute extends _i18.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i8.NotificationPermissonPage]
-class NotificationPermissonRoute extends _i18.PageRouteInfo<void> {
-  const NotificationPermissonRoute({List<_i18.PageRouteInfo>? children})
+class NotificationPermissonRoute extends _i20.PageRouteInfo<void> {
+  const NotificationPermissonRoute({List<_i20.PageRouteInfo>? children})
     : super(NotificationPermissonRoute.name, initialChildren: children);
 
   static const String name = 'NotificationPermissonRoute';
 
-  static _i18.PageInfo page = _i18.PageInfo(
+  static _i20.PageInfo page = _i20.PageInfo(
     name,
     builder: (data) {
       return const _i8.NotificationPermissonPage();
@@ -174,13 +213,13 @@ class NotificationPermissonRoute extends _i18.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i9.OnboardingFirstTabPage]
-class OnboardingFirstTabRoute extends _i18.PageRouteInfo<void> {
-  const OnboardingFirstTabRoute({List<_i18.PageRouteInfo>? children})
+class OnboardingFirstTabRoute extends _i20.PageRouteInfo<void> {
+  const OnboardingFirstTabRoute({List<_i20.PageRouteInfo>? children})
     : super(OnboardingFirstTabRoute.name, initialChildren: children);
 
   static const String name = 'OnboardingFirstTabRoute';
 
-  static _i18.PageInfo page = _i18.PageInfo(
+  static _i20.PageInfo page = _i20.PageInfo(
     name,
     builder: (data) {
       return const _i9.OnboardingFirstTabPage();
@@ -190,13 +229,13 @@ class OnboardingFirstTabRoute extends _i18.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i10.OnboardingSecondTabPage]
-class OnboardingSecondTabRoute extends _i18.PageRouteInfo<void> {
-  const OnboardingSecondTabRoute({List<_i18.PageRouteInfo>? children})
+class OnboardingSecondTabRoute extends _i20.PageRouteInfo<void> {
+  const OnboardingSecondTabRoute({List<_i20.PageRouteInfo>? children})
     : super(OnboardingSecondTabRoute.name, initialChildren: children);
 
   static const String name = 'OnboardingSecondTabRoute';
 
-  static _i18.PageInfo page = _i18.PageInfo(
+  static _i20.PageInfo page = _i20.PageInfo(
     name,
     builder: (data) {
       return const _i10.OnboardingSecondTabPage();
@@ -206,13 +245,13 @@ class OnboardingSecondTabRoute extends _i18.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i11.OnboardingTabviewPage]
-class OnboardingTabviewRoute extends _i18.PageRouteInfo<void> {
-  const OnboardingTabviewRoute({List<_i18.PageRouteInfo>? children})
+class OnboardingTabviewRoute extends _i20.PageRouteInfo<void> {
+  const OnboardingTabviewRoute({List<_i20.PageRouteInfo>? children})
     : super(OnboardingTabviewRoute.name, initialChildren: children);
 
   static const String name = 'OnboardingTabviewRoute';
 
-  static _i18.PageInfo page = _i18.PageInfo(
+  static _i20.PageInfo page = _i20.PageInfo(
     name,
     builder: (data) {
       return const _i11.OnboardingTabviewPage();
@@ -222,13 +261,13 @@ class OnboardingTabviewRoute extends _i18.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i12.OnboardingThirdTabPage]
-class OnboardingThirdTabRoute extends _i18.PageRouteInfo<void> {
-  const OnboardingThirdTabRoute({List<_i18.PageRouteInfo>? children})
+class OnboardingThirdTabRoute extends _i20.PageRouteInfo<void> {
+  const OnboardingThirdTabRoute({List<_i20.PageRouteInfo>? children})
     : super(OnboardingThirdTabRoute.name, initialChildren: children);
 
   static const String name = 'OnboardingThirdTabRoute';
 
-  static _i18.PageInfo page = _i18.PageInfo(
+  static _i20.PageInfo page = _i20.PageInfo(
     name,
     builder: (data) {
       return const _i12.OnboardingThirdTabPage();
@@ -238,13 +277,13 @@ class OnboardingThirdTabRoute extends _i18.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i13.PersonalisationView]
-class PersonalisationRoute extends _i18.PageRouteInfo<void> {
-  const PersonalisationRoute({List<_i18.PageRouteInfo>? children})
+class PersonalisationRoute extends _i20.PageRouteInfo<void> {
+  const PersonalisationRoute({List<_i20.PageRouteInfo>? children})
     : super(PersonalisationRoute.name, initialChildren: children);
 
   static const String name = 'PersonalisationRoute';
 
-  static _i18.PageInfo page = _i18.PageInfo(
+  static _i20.PageInfo page = _i20.PageInfo(
     name,
     builder: (data) {
       return const _i13.PersonalisationView();
@@ -254,13 +293,13 @@ class PersonalisationRoute extends _i18.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i14.ProfileVeiw]
-class ProfileVeiw extends _i18.PageRouteInfo<void> {
-  const ProfileVeiw({List<_i18.PageRouteInfo>? children})
+class ProfileVeiw extends _i20.PageRouteInfo<void> {
+  const ProfileVeiw({List<_i20.PageRouteInfo>? children})
     : super(ProfileVeiw.name, initialChildren: children);
 
   static const String name = 'ProfileVeiw';
 
-  static _i18.PageInfo page = _i18.PageInfo(
+  static _i20.PageInfo page = _i20.PageInfo(
     name,
     builder: (data) {
       return const _i14.ProfileVeiw();
@@ -270,13 +309,13 @@ class ProfileVeiw extends _i18.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i15.RegistrationSuccessfulView]
-class RegistrationSuccessfulRoute extends _i18.PageRouteInfo<void> {
-  const RegistrationSuccessfulRoute({List<_i18.PageRouteInfo>? children})
+class RegistrationSuccessfulRoute extends _i20.PageRouteInfo<void> {
+  const RegistrationSuccessfulRoute({List<_i20.PageRouteInfo>? children})
     : super(RegistrationSuccessfulRoute.name, initialChildren: children);
 
   static const String name = 'RegistrationSuccessfulRoute';
 
-  static _i18.PageInfo page = _i18.PageInfo(
+  static _i20.PageInfo page = _i20.PageInfo(
     name,
     builder: (data) {
       return const _i15.RegistrationSuccessfulView();
@@ -286,13 +325,13 @@ class RegistrationSuccessfulRoute extends _i18.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i16.ResetPasswordPage]
-class ResetPasswordRoute extends _i18.PageRouteInfo<void> {
-  const ResetPasswordRoute({List<_i18.PageRouteInfo>? children})
+class ResetPasswordRoute extends _i20.PageRouteInfo<void> {
+  const ResetPasswordRoute({List<_i20.PageRouteInfo>? children})
     : super(ResetPasswordRoute.name, initialChildren: children);
 
   static const String name = 'ResetPasswordRoute';
 
-  static _i18.PageInfo page = _i18.PageInfo(
+  static _i20.PageInfo page = _i20.PageInfo(
     name,
     builder: (data) {
       return const _i16.ResetPasswordPage();
@@ -301,17 +340,49 @@ class ResetPasswordRoute extends _i18.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i17.VerifyMailPage]
-class VerifyMailRoute extends _i18.PageRouteInfo<void> {
-  const VerifyMailRoute({List<_i18.PageRouteInfo>? children})
+/// [_i17.SignupTabViewPage]
+class SignupTabviewRoute extends _i20.PageRouteInfo<void> {
+  const SignupTabviewRoute({List<_i20.PageRouteInfo>? children})
+    : super(SignupTabviewRoute.name, initialChildren: children);
+
+  static const String name = 'SignupTabviewRoute';
+
+  static _i20.PageInfo page = _i20.PageInfo(
+    name,
+    builder: (data) {
+      return const _i17.SignupTabViewPage();
+    },
+  );
+}
+
+/// generated route for
+/// [_i18.SplashView]
+class SplashRoute extends _i20.PageRouteInfo<void> {
+  const SplashRoute({List<_i20.PageRouteInfo>? children})
+    : super(SplashRoute.name, initialChildren: children);
+
+  static const String name = 'SplashRoute';
+
+  static _i20.PageInfo page = _i20.PageInfo(
+    name,
+    builder: (data) {
+      return const _i18.SplashView();
+    },
+  );
+}
+
+/// generated route for
+/// [_i19.VerifyMailPage]
+class VerifyMailRoute extends _i20.PageRouteInfo<void> {
+  const VerifyMailRoute({List<_i20.PageRouteInfo>? children})
     : super(VerifyMailRoute.name, initialChildren: children);
 
   static const String name = 'VerifyMailRoute';
 
-  static _i18.PageInfo page = _i18.PageInfo(
+  static _i20.PageInfo page = _i20.PageInfo(
     name,
     builder: (data) {
-      return const _i17.VerifyMailPage();
+      return const _i19.VerifyMailPage();
     },
   );
 }

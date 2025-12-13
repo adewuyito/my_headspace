@@ -1,25 +1,26 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:my_headspace/core/constants/styles.dart';
-import 'package:my_headspace/features/auth/application/providers/login_provider.dart';
 import 'package:my_headspace/gen/assets.gen.dart';
 import 'package:my_headspace/gen/colors.gen.dart';
-import 'package:my_headspace/routes/app_navigator.dart';
 import 'package:my_headspace/routes/app_route.gr.dart';
-import 'package:my_headspace/service/service_locator.dart';
+import 'package:my_headspace/routes/app_navigator.dart';
+import 'package:my_headspace/core/constants/styles.dart';
+import 'package:my_headspace/shared/widgets/shared_textfield.dart';
 import 'package:my_headspace/shared/components/rich_text/base_text.dart';
 import 'package:my_headspace/shared/components/rich_text/rich_text_widget.dart';
-import 'package:my_headspace/shared/widgets/shared_textfield.dart';
 
-@routePage
+
+@RoutePage(name: 'LoginRoute')
 class LoginPage extends HookWidget {
   const LoginPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // ~ Text Controller
-    final loginProvider = serviceLocator.getIt<LoginProvider>();
+    // ~ Text contollers
+    final emailController = useTextEditingController();
+    final passwordController = useTextEditingController();
 
     return Scaffold(
       appBar: AppBar(leading: AutoLeadingButton()),
@@ -46,11 +47,11 @@ class LoginPage extends HookWidget {
                     spacing: 29,
                     children: [
                       FromTextInputField(
-                        controller: loginProvider.emailController,
+                        controller: emailController,
                         label: "Email address",
                       ),
                       FromTextInputField(
-                        controller: loginProvider.passwordController,
+                        controller: passwordController,
                         label: "Password",
                       ),
                     ],
@@ -62,7 +63,9 @@ class LoginPage extends HookWidget {
             const SizedBox(height: 33),
 
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+                AppNavigator.of(context).push(ResetPasswordRoute());
+              },
               child: Text(
                 "Forgot password?",
                 style: hpStyles.m16.copyWith(color: Color(0xFF1A6B51)),
@@ -71,14 +74,42 @@ class LoginPage extends HookWidget {
 
             Spacer(),
 
+            // ~ Login Button
             Row(
               children: [
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () {
-                      AppNavigator.of(
-                        context,
-                      ).push(ApplicationNavigatorRoute());
+                    onPressed: () async {
+                      try {
+                        final cred = await FirebaseAuth.instance
+                            .signInWithEmailAndPassword(
+                              email: emailController.text,
+                              password: passwordController.text,
+                            );
+
+                        if (cred.user != null) {
+                          debugPrint("user logged in");
+                        }
+                        // await context.read<AuthProvider>().loginUserWithEmail(
+                        //   emailController.text,
+                        //   passwordController.text,
+                        // );
+
+                        // if (context.read<AuthProvider>().isAuthenticated) {
+                        //   debugPrint("user logged in");
+                        // }
+                      } catch (e) {
+                        if (context.mounted) {
+                          // TODO: Use made implimentation of snackBar
+                          debugPrint(e.toString());
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(e.toString()),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
+                      }
                     },
                     child: Text("Next"),
                   ),

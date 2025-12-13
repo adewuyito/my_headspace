@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_headspace/core/constants/styles.dart';
-import 'package:my_headspace/features/auth/application/providers/signup_provider.dart';
+import 'package:my_headspace/features/auth/application/providers/auth_provider.dart';
 import 'package:my_headspace/gen/assets.gen.dart';
 import 'package:my_headspace/gen/colors.gen.dart';
 import 'package:my_headspace/routes/app_navigator.dart';
@@ -20,7 +20,14 @@ class CreateAccountPage2 extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final signupProvider = serviceLocator.getIt<SignupProvider>();
+    // ~ Page Controller
+    final emailController = useTextEditingController(); 
+    final usernameNameController = useTextEditingController(); 
+    final passwordController = useTextEditingController();
+    final repasswordController = useTextEditingController();
+
+    // ~Provider
+    final authProvider = serviceLocator.getIt<AuthProvider>();
 
     return Scaffold(
       appBar: AppBar(
@@ -67,22 +74,22 @@ class CreateAccountPage2 extends HookWidget {
                     spacing: 29,
                     children: [
                       FromTextInputField(
-                        controller: signupProvider.usernameNameController,
+                        controller: usernameNameController,
                         label: "Username",
                       ),
 
                       FromTextInputField(
-                        controller: signupProvider.emailController,
+                        controller: emailController,
                         label: "Email address",
                       ),
 
                       FromTextInputField(
-                        controller: signupProvider.passwordController,
+                        controller: passwordController,
                         label: "Password",
                       ),
 
                       FromTextInputField(
-                        controller: signupProvider.confirmPasswordController,
+                        controller: repasswordController,
                         label: "Confirm Password",
                       ),
                     ],

@@ -1,26 +1,35 @@
 // ignore_for_file: no_leading_underscores_for_local_identifiers
+import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:date_field/date_field.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:my_headspace/core/constants/styles.dart';
-import 'package:my_headspace/features/auth/application/enums/user_gender_enum.dart';
-import 'package:my_headspace/features/auth/application/providers/signup_provider.dart';
 import 'package:my_headspace/gen/assets.gen.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:my_headspace/gen/colors.gen.dart';
-import 'package:my_headspace/routes/app_navigator.dart';
 import 'package:my_headspace/routes/app_route.gr.dart';
+import 'package:my_headspace/routes/app_navigator.dart';
+import 'package:my_headspace/core/constants/styles.dart';
 import 'package:my_headspace/service/service_locator.dart';
 import 'package:my_headspace/shared/widgets/shared_textfield.dart';
+import 'package:my_headspace/features/auth/application/providers/auth_provider.dart';
+import 'package:my_headspace/features/auth/application/enums/user_gender_enum.dart';
 
 @routePage
 class CreateAccountPage1 extends HookWidget {
+
   const CreateAccountPage1({super.key});
 
   @override
   Widget build(BuildContext context) {
     // ~ Text Controller
-    final signupProvider = serviceLocator.getIt<SignupProvider>();
+    final firstnameController = useTextEditingController();
+    final lastnameController = useTextEditingController();
+
+    final phoneNumberController = useTextEditingController();
+    final userAgeController = useState<DateTime?>(null);
+    final userGenderController = useState<UserGender?>(null);
+
+    // ~ Provider
+    
 
     return Scaffold(
       appBar: AppBar(
@@ -61,11 +70,11 @@ class CreateAccountPage1 extends HookWidget {
                     spacing: 29,
                     children: [
                       FromTextInputField(
-                        controller: signupProvider.firstNameController,
+                        controller: firstnameController,
                         label: "Enter first name",
                       ),
                       FromTextInputField(
-                        controller: signupProvider.lastNameController,
+                        controller: lastnameController,
                         label: "Enter last name",
                       ),
 
@@ -87,7 +96,7 @@ class CreateAccountPage1 extends HookWidget {
                         ),
                         initialPickerDateTime: DateTime.now(),
                         onChanged: (DateTime? value) {
-                          signupProvider.userAgeController = value;
+                          userAgeController.value = value;
                         },
                       ),
 
@@ -101,7 +110,7 @@ class CreateAccountPage1 extends HookWidget {
                         ),
                         trailingIcon: Assets.icons.caratDown.svg(),
                         onSelected: (gender) {
-                          signupProvider.userGenderController = gender;
+                          userGenderController.value = gender;
                         },
                         selectedTrailingIcon: RotatedBox(
                           quarterTurns: 2,
@@ -131,7 +140,7 @@ class CreateAccountPage1 extends HookWidget {
                       ),
 
                       FromTextInputField(
-                        controller: signupProvider.phoneNumberController,
+                        controller: phoneNumberController,
                         label: "Phone no (optional)",
                       ),
                     ],

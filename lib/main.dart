@@ -1,18 +1,15 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:my_headspace/features/auth/application/providers/auth_flow_provider.dart';
+import 'package:my_headspace/features/auth/domain/repository/auth_repository.dart';
 import 'package:my_headspace/firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:my_headspace/app.dart';
-import 'package:my_headspace/features/auth/application/providers/reset_password_provider.dart';
 import 'package:my_headspace/features/home/application/providers/personalisation_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:my_headspace/routes/app_route.dart';
 import 'package:my_headspace/routes/app_route_guard.dart';
 import 'package:my_headspace/service/service_locator.dart';
-import 'package:my_headspace/features/auth/data/auth_provider.dart';
-import 'package:my_headspace/features/auth/application/providers/login_provider.dart';
-import 'package:my_headspace/features/auth/application/providers/signup_provider.dart';
-
-// 05643513-e77b-4d10-8df2-17c13db6142b
+import 'package:my_headspace/features/auth/application/providers/auth_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,22 +24,12 @@ void main() async {
           create: (_) => serviceLocator.getIt<PersonalisationProvider>(),
         ),
 
-        Provider(create: (context) => serviceLocator.getIt<AuthGuard>()),
+        Provider(create: (_) => serviceLocator.getIt<AuthRepository>()),
+
+        Provider(create: (_) => serviceLocator.getIt<AuthGuard>()),
 
         ChangeNotifierProvider(
-          create: (context) => serviceLocator.getIt<SignupProvider>(),
-        ),
-
-        ChangeNotifierProvider(
-          create: (context) => serviceLocator.getIt<LoginProvider>(),
-        ),
-
-        ChangeNotifierProvider(
-          create: (context) => serviceLocator.getIt<ResetPasswordProvider>(),
-        ),
-
-        ChangeNotifierProvider(
-          create: (context) => serviceLocator.getIt<AuthProvider>(),
+          create: (_) => serviceLocator.getIt<AuthProvider>(),
         ),
 
         ChangeNotifierProxyProvider<AuthGuard, AppRouter>(
