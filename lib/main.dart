@@ -1,5 +1,4 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:my_headspace/features/auth/application/providers/auth_flow_provider.dart';
 import 'package:my_headspace/features/auth/domain/repository/auth_repository.dart';
 import 'package:my_headspace/firebase_options.dart';
 import 'package:flutter/material.dart';
@@ -13,9 +12,9 @@ import 'package:my_headspace/features/auth/application/providers/auth_provider.d
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  serviceLocator.configure();
-
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  serviceLocator.configure();
 
   runApp(
     MultiProvider(
@@ -32,19 +31,7 @@ void main() async {
           create: (_) => serviceLocator.getIt<AuthProvider>(),
         ),
 
-        ChangeNotifierProxyProvider<AuthGuard, AppRouter>(
-          create: (context) {
-            final guard = Provider.of<AuthGuard>(context, listen: false);
-            return AppRouter(authGuard: guard);
-          },
-          update: (cxt, guard, router) {
-            if (router != null) {
-              router.updateAuthGuard(guard);
-              return router;
-            }
-            return AppRouter(authGuard: guard);
-          },
-        ),
+        ChangeNotifierProvider<AppRouter>(create: (_) => AppRouter()),
       ],
       child: const MainApp(),
     ),

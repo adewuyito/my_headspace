@@ -1,5 +1,3 @@
-import 'package:my_headspace/service/service_locator.dart';
-
 import 'app_route_guard.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
@@ -26,24 +24,27 @@ class TransitionsBuilder {
 
 @AutoRouterConfig(replaceInRouteName: 'Page|View|Screen,Route')
 class AppRouter extends RootStackRouter {
-  AppRouter({required this.authGuard});
-  AuthGuard authGuard;
+  AppRouter();
 
   @override
   List<AutoRoute> get routes => [
     AutoRoute(page: SplashRoute.page, initial: true),
 
-    // ~ Home View
-    AutoRoute(page: HomeRoute.page),
-    AutoRoute(page: PersonalisationRoute.page),
+    AutoRoute(page: RegistrationSuccessfulRoute.page),
 
+    AutoRoute(page: GetStartedRoute.page),
+
+    // ~ Home View
     AutoRoute(
       page: ApplicationNavigatorRoute.page,
+      guards: [AuthGuard()],
       children: [
         AutoRoute(page: HomeRoute.page),
         AutoRoute(page: ProfileVeiw.page),
       ],
     ),
+
+    AutoRoute(page: PersonalisationRoute.page),
 
     // ~ Permission View
     AutoRoute(page: NotificationPermissonRoute.page),
@@ -65,10 +66,6 @@ class AppRouter extends RootStackRouter {
       ],
     ),
 
-    AutoRoute(page: RegistrationSuccessfulRoute.page),
-
-    AutoRoute(page: GetStartedRoute.page),
-
     // ~ Onboarding PageView
     AutoRoute(
       page: OnboardingTabviewRoute.page,
@@ -83,10 +80,10 @@ class AppRouter extends RootStackRouter {
   @override
   List<AutoRouteGuard> get guards => [];
 
-  void updateAuthGuard(AuthGuard guard) {
-    authGuard = guard;
-    notifyListeners();
-  }
+  // void updateAuthGuard(AuthGuard guard) {
+  //   authGuard = guard;
+  //   notifyListeners();
+  // }
 
   // CustomRoute routeWithFadeTransition({
   //   required PageInfo<dynamic> page,

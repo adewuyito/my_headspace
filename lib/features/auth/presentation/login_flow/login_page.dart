@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:my_headspace/features/auth/application/providers/auth_provider.dart';
 import 'package:my_headspace/gen/assets.gen.dart';
 import 'package:my_headspace/gen/colors.gen.dart';
 import 'package:my_headspace/routes/app_route.gr.dart';
@@ -10,7 +10,7 @@ import 'package:my_headspace/core/constants/styles.dart';
 import 'package:my_headspace/shared/widgets/shared_textfield.dart';
 import 'package:my_headspace/shared/components/rich_text/base_text.dart';
 import 'package:my_headspace/shared/components/rich_text/rich_text_widget.dart';
-
+import 'package:provider/provider.dart';
 
 @RoutePage(name: 'LoginRoute')
 class LoginPage extends HookWidget {
@@ -21,6 +21,33 @@ class LoginPage extends HookWidget {
     // ~ Text contollers
     final emailController = useTextEditingController();
     final passwordController = useTextEditingController();
+    final _formKey = GlobalKey<FormState>();
+
+    final _isLoading = context.watch<AuthProvider>().isLoading;
+
+    Future<void> _loginUser() async {
+      if (!_formKey.currentState!.validate()) return;
+
+      final authProvider = context.read<AuthProvider>();
+      final success = await authProvider.loginUserWithEmail(
+        emailController.text.trim(),
+        passwordController.text,
+      );
+
+      if (!context.mounted) return;
+
+      if (success) {
+        context.router.replaceAll([const ApplicationNavigatorRoute()]);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          // TODO: Use snackbar util
+          SnackBar(
+            content: Text(authProvider.errorMessage ?? 'Login failed'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(leading: AutoLeadingButton()),
@@ -29,115 +56,85 @@ class LoginPage extends HookWidget {
             const EdgeInsets.symmetric(horizontal: 38.0) +
             const EdgeInsets.only(top: 10, bottom: 26),
 
-        child: Column(
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Log in", style: hpStyles.sb24),
-                Text(
-                  "Enter your email and password to log in",
-                  style: hpStyles.r14.copyWith(color: ColorName.textGray78),
-                ),
-
-                const SizedBox(height: 33),
-
-                Form(
-                  child: Column(
-                    spacing: 29,
-                    children: [
-                      FromTextInputField(
-                        controller: emailController,
-                        label: "Email address",
-                      ),
-                      FromTextInputField(
-                        controller: passwordController,
-                        label: "Password",
-                      ),
-                    ],
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Log in", style: hpStyles.sb24),
+                  Text(
+                    "Enter your email and password to log in",
+                    style: hpStyles.r14.copyWith(color: ColorName.textGray78),
                   ),
-                ),
-              ],
-            ),
 
-            const SizedBox(height: 33),
+                  const SizedBox(height: 33),
 
-            TextButton(
-              onPressed: () {
-                AppNavigator.of(context).push(ResetPasswordRoute());
-              },
-              child: Text(
-                "Forgot password?",
-                style: hpStyles.m16.copyWith(color: Color(0xFF1A6B51)),
+                  FromTextInputField(
+                    controller: emailController,
+                    label: "Email address",
+                  ),
+
+                  const SizedBox(height: 29),
+
+                  FromTextInputField(
+                    controller: passwordController,
+                    label: "Password",
+                  ),
+                ],
               ),
-            ),
 
-            Spacer(),
+              const SizedBox(height: 33),
 
-            // ~ Login Button
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      try {
-                        final cred = await FirebaseAuth.instance
-                            .signInWithEmailAndPassword(
-                              email: emailController.text,
-                              password: passwordController.text,
-                            );
+              TextButton(
+                onPressed: () {
+                  AppNavigator.of(context).push(ResetPasswordRoute());
+                },
+                child: Text(
+                  "Forgot password?",
+                  style: hpStyles.m16.copyWith(color: Color(0xFF1A6B51)),
+                ),
+              ),
 
-                        if (cred.user != null) {
-                          debugPrint("user logged in");
-                        }
-                        // await context.read<AuthProvider>().loginUserWithEmail(
-                        //   emailController.text,
-                        //   passwordController.text,
-                        // );
+              Spacer(),
 
-                        // if (context.read<AuthProvider>().isAuthenticated) {
-                        //   debugPrint("user logged in");
-                        // }
-                      } catch (e) {
-                        if (context.mounted) {
-                          // TODO: Use made implimentation of snackBar
-                          debugPrint(e.toString());
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(e.toString()),
-                              backgroundColor: Colors.red,
-                            ),
-                          );
-                        }
-                      }
-                    },
-                    child: Text("Next"),
+              // ~ Login Button
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: _isLoading ? null : _loginUser,
+                      child: _isLoading
+                          ? const CircularProgressIndicator()
+                          : Text("Next"),
+                    ),
                   ),
-                ),
-                const SizedBox(width: 25),
-                Assets.icons.fingerprint.svg(),
-              ],
-            ),
+                  const SizedBox(width: 25),
+                  Assets.icons.fingerprint.svg(),
+                ],
+              ),
 
-            const SizedBox(height: 21),
+              const SizedBox(height: 21),
 
-            RichTextWidget(
-              styleForAll: hpStyles.r14.copyWith(letterSpacing: -.1),
-              texts: [
-                BaseText.plain(
-                  text: "Don't have an account? ",
-                  style: hpStyles.r14.copyWith(color: Color(0xFF667185)),
-                ),
-                BaseText.link(
-                  onTapped: () {
-                    AppNavigator.of(context).push(CreateAccountRoute1());
-                  },
-                  text: "Create account",
-                  style: hpStyles.m14.copyWith(color: ColorName.appOrange),
-                ),
-              ],
-            ),
-          ],
+              RichTextWidget(
+                styleForAll: hpStyles.r14.copyWith(letterSpacing: -.1),
+                texts: [
+                  BaseText.plain(
+                    text: "Don't have an account? ",
+                    style: hpStyles.r14.copyWith(color: Color(0xFF667185)),
+                  ),
+                  BaseText.link(
+                    onTapped: () {
+                      AppNavigator.of(context).push(CreateAccountRoute1());
+                    },
+                    text: "Create account",
+                    style: hpStyles.m14.copyWith(color: ColorName.appOrange),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

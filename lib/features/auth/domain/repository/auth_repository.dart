@@ -19,8 +19,9 @@ class AuthRepository {
       );
 
       return userCred.user;
-    } catch (_) {}
-    return null;
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<User?> signupUserWithEmail({
@@ -35,16 +36,15 @@ class AuthRepository {
       );
 
       return userCred.user;
-    } catch (_) {}
-    return null;
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<void> logOut() async {
     await _authRemoteDatasources.logOut();
   }
-
 }
-
 
 class AuthState {
   final AuthResult result;

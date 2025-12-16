@@ -6,13 +6,14 @@ import 'package:my_headspace/service/service_locator.dart';
 class AuthGuard extends AutoRouteGuard {
   @override
   void onNavigation(NavigationResolver resolver, StackRouter router) {
-    final authProvider = serviceLocator.getIt<AuthProvider>();
+
+    final AuthProvider authProvider = serviceLocator.getIt<AuthProvider>();
 
     if (authProvider.isAuthenticated) {
-      resolver.next();
-      return;
+      resolver.next(true);
+    } else {
+      router.pushAndPopUntil(const GetStartedRoute(), predicate: (_) => false);
+      resolver.next(false);
     }
-
-    router.push(GetStartedRoute());
   }
 }

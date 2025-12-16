@@ -9,12 +9,20 @@ import 'package:my_headspace/shared/components/rich_text/rich_text_widget.dart';
 
 @RoutePage(name: 'GetStartedRoute')
 class GetStartedPage extends StatelessWidget {
-  final VoidCallback? authSuccess;
-  const GetStartedPage({super.key, this.authSuccess});
+  const GetStartedPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () async {
+      //     if (serviceLocator.getIt<AuthProvider>().isAuthenticated) {
+      //       debugPrint("User is authed");
+      //     } else {
+      //       debugPrint("User is not authed");
+      //     }
+      //   },
+      // ),
       body: Stack(
         children: [
           Container(

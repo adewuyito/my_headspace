@@ -11,16 +11,17 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appRouter = context.read<AppRouter>();
+    final authProvider = serviceLocator.getIt<AuthProvider>();
+
     return ScreenUtilInit(
       designSize: const Size(402, 874),
 
       child: MaterialApp.router(
         theme: headspaceTheme,
         debugShowCheckedModeBanner: false,
-        routerConfig: context.select(
-          (AppRouter r) => r.config(
-            reevaluateListenable: serviceLocator.getIt<AuthProvider>(),
-          ),
+        routerConfig: appRouter.config(
+          reevaluateListenable: authProvider,
         ),
       ),
     );

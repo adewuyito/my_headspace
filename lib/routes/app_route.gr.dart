@@ -10,8 +10,6 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i20;
-import 'package:flutter/foundation.dart' as _i21;
-import 'package:flutter/material.dart' as _i22;
 import 'package:my_headspace/features/auth/presentation/get_started_page.dart'
     as _i5;
 import 'package:my_headspace/features/auth/presentation/login_flow/login_page.dart'
@@ -116,51 +114,18 @@ class CreateAccountRoute2 extends _i20.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i5.GetStartedPage]
-class GetStartedRoute extends _i20.PageRouteInfo<GetStartedRouteArgs> {
-  GetStartedRoute({
-    _i21.Key? key,
-    _i22.VoidCallback? authSuccess,
-    List<_i20.PageRouteInfo>? children,
-  }) : super(
-         GetStartedRoute.name,
-         args: GetStartedRouteArgs(key: key, authSuccess: authSuccess),
-         initialChildren: children,
-       );
+class GetStartedRoute extends _i20.PageRouteInfo<void> {
+  const GetStartedRoute({List<_i20.PageRouteInfo>? children})
+    : super(GetStartedRoute.name, initialChildren: children);
 
   static const String name = 'GetStartedRoute';
 
   static _i20.PageInfo page = _i20.PageInfo(
     name,
     builder: (data) {
-      final args = data.argsAs<GetStartedRouteArgs>(
-        orElse: () => const GetStartedRouteArgs(),
-      );
-      return _i5.GetStartedPage(key: args.key, authSuccess: args.authSuccess);
+      return const _i5.GetStartedPage();
     },
   );
-}
-
-class GetStartedRouteArgs {
-  const GetStartedRouteArgs({this.key, this.authSuccess});
-
-  final _i21.Key? key;
-
-  final _i22.VoidCallback? authSuccess;
-
-  @override
-  String toString() {
-    return 'GetStartedRouteArgs{key: $key, authSuccess: $authSuccess}';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    if (other is! GetStartedRouteArgs) return false;
-    return key == other.key && authSuccess == other.authSuccess;
-  }
-
-  @override
-  int get hashCode => key.hashCode ^ authSuccess.hashCode;
 }
 
 /// generated route for

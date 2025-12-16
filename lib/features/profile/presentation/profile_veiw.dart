@@ -1,8 +1,10 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:my_headspace/core/constants/styles.dart';
+import 'package:my_headspace/features/auth/application/providers/auth_provider.dart';
 import 'package:my_headspace/gen/assets.gen.dart';
 import 'package:my_headspace/gen/colors.gen.dart';
+import 'package:provider/provider.dart';
 
 @routePage
 class ProfileVeiw extends StatelessWidget {
@@ -101,6 +103,9 @@ class ProfileVeiw extends StatelessWidget {
                       color: Color.fromRGBO(151, 151, 151, 1),
                     ),
                   ),
+                  onTap: () async {
+                    await context.read<AuthProvider>().logOutUser();
+                  },
                 ),
               ],
             ),
