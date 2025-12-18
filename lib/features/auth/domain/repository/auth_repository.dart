@@ -1,11 +1,23 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:my_headspace/features/auth/application/enums/auth_results.dart';
 import 'package:my_headspace/features/auth/data/datasources/auth_remote_datasources.dart';
+import 'package:my_headspace/features/auth/data/models/user_data_model.dart';
 
 class AuthRepository {
   AuthRepository() : _authRemoteDatasources = AuthRemoteDatasources();
 
   final AuthRemoteDatasources _authRemoteDatasources;
+
+  Future<void> updateUser({
+    required UserData data,
+    required UserId userid,
+  }) async {
+    try {
+      await _authRemoteDatasources.saveUserDataAfterLogin(data, userid);
+    } catch (e) {
+      rethrow;
+    }
+  }
 
   Future<User?> loginUserWithEmail({
     required String email,

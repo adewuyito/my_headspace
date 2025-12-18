@@ -26,16 +26,16 @@ class CreateAccountPage1 extends HookWidget {
     final userAgeController = useState<DateTime?>(null);
     final userGenderController = useState<UserGender?>(null);
 
-    final _key = GlobalKey<FormState>();
+    final _formKey = GlobalKey<FormState>();
 
     // ~ Provider
     final createAccountProvider = context.read<CreateAccountProvider>();
 
     void navigateToNextPage() {
       // TODO: Check form key
-      if (!(createAccountProvider.formKey.currentState!.validate())) return;
+      if (!(_formKey.currentState!.validate())) return;
 
-      createAccountProvider.userData.copyWith(
+      createAccountProvider.updateUserData(
         firstName: firstnameController.text.trim(),
         lastName: lastnameController.text.trim(),
         dateOfBirth: userAgeController.value,
@@ -53,7 +53,7 @@ class CreateAccountPage1 extends HookWidget {
             const EdgeInsets.only(top: 10, bottom: 26),
 
         child: Form(
-          key: createAccountProvider.formKey,
+          key: _formKey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

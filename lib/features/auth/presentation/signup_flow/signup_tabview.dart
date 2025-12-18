@@ -16,6 +16,7 @@ class SignupTabViewPage extends StatelessWidget {
     return Consumer<CreateAccountProvider>(
       builder: (context, value, child) {
         return AutoTabsRouter.pageView(
+          physics: NeverScrollableScrollPhysics(),
           routes: [CreateAccountRoute1(), CreateAccountRoute2()],
           animatePageTransition: true,
           duration: const Duration(milliseconds: 400),

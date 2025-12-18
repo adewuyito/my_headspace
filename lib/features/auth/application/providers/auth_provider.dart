@@ -1,11 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:my_headspace/features/auth/application/enums/auth_results.dart';
+import 'package:my_headspace/features/auth/application/providers/create_account_provider.dart';
 import 'package:my_headspace/features/auth/domain/repository/auth_repository.dart';
+import 'package:my_headspace/service/service_locator.dart';
 
 class AuthProvider extends ChangeNotifier {
   AuthState _authState = AuthState.unknown();
   final AuthRepository _authRepo = AuthRepository();
+  final userData = serviceLocator.getIt<CreateAccountProvider>();
   String? _errorMessage;
 
   User? _user;
@@ -68,20 +71,23 @@ class AuthProvider extends ChangeNotifier {
       _authState = _authState.copiedWithIsLoading(true);
       notifyListeners();
 
-      final user = await _authRepo.signupUserWithEmail(
+      final credential = await _authRepo.signupUserWithEmail(
         email: email,
         password: password,
       );
 
-      // ~ Update The AuthState
-      if (user != null) {
-        _authState = AuthState(
-          result: AuthResult.authSuccess,
-          isLoading: false,
-          userId: user.uid,
-        );
+      if (credential != null) {
+        final userDataProvider = serviceLocator.getIt<CreateAccountProvider>();
+        final userData = userDataProvider.userData;
+
+        await _authRepo.updateUser(data: userData, userid: credential.uid);
       }
 
+      _authState = AuthState(
+        result: AuthResult.authSuccess,
+        isLoading: false,
+        userId: credential?.uid,
+      );
       notifyListeners();
       await Future.delayed(const Duration(milliseconds: 100));
 
@@ -91,7 +97,7 @@ class AuthProvider extends ChangeNotifier {
       _authState = _authState.copiedWithIsLoading(false);
       notifyListeners();
       return false;
-    } catch (_) {
+    } catch (e) {
       _errorMessage = 'An unexpected error occurred. Please try again.';
       _authState = _authState.copiedWithIsLoading(false);
       notifyListeners();

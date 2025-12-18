@@ -29,14 +29,16 @@ class CreateAccountPage2 extends HookWidget {
 
     final _isLoading = context.watch<AuthProvider>().isLoading;
 
+    final _formKey = GlobalKey<FormState>();
+
     // ~Provider
     final createAccountProvider = context.read<CreateAccountProvider>();
 
     Future<void> _createUser() async {
-      if (!createAccountProvider.formKey.currentState!.validate()) return;
+      if (!(_formKey.currentState!.validate())) return;
 
       // ~ Updated user data
-      createAccountProvider.userData.copyWith(
+      createAccountProvider.updateUserData(
         username: usernameNameController.text.trim(),
       );
 
@@ -92,6 +94,7 @@ class CreateAccountPage2 extends HookWidget {
                 SizedBox(height: 23.h),
 
                 Form(
+                  key: _formKey,
                   child: Column(
                     spacing: 29,
                     children: [
@@ -108,18 +111,25 @@ class CreateAccountPage2 extends HookWidget {
                       ),
 
                       FromTextInputField(
+                        validateMode: AutovalidateMode.onUserInteraction,
                         controller: passwordController,
                         label: "Password",
-                        // validator: InputValidatorUtils.,
+                        validator: (v) =>
+                            InputValidatorUtils.nonEmptyField("Password", v),
                       ),
 
                       FromTextInputField(
+                        validateMode: AutovalidateMode.onUserInteraction,
                         controller: repasswordController,
                         label: "Confirm Password",
                         validator: (value) =>
                             InputValidatorUtils.confirmPassword(
                               value!,
                               passwordController.text,
+                            ) ??
+                            InputValidatorUtils.nonEmptyField(
+                              "Password",
+                              value,
                             ),
                       ),
                     ],

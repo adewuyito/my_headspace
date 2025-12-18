@@ -1,9 +1,23 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:my_headspace/features/auth/data/models/user_data_model.dart';
 
 class AuthRemoteDatasources {
   AuthRemoteDatasources();
 
-  final FirebaseAuth firebaseInstance = FirebaseAuth.instance;
+  final FirebaseAuth authInstance = FirebaseAuth.instance;
+  final FirebaseFirestore firestoreInstance = FirebaseFirestore.instance;
+
+  Future<void> saveUserDataAfterLogin(UserData data, UserId userid) async {
+    try {
+      await firestoreInstance
+          .collection(FirebaseCollectionName.userCollection)
+          .doc(userid)
+          .set(data.toFirestore(), SetOptions(merge: true));
+    } catch (e) {
+      rethrow;
+    }
+  }
 
   // ~ Login User
   Future<UserCredential> loginWithEmail({
@@ -11,7 +25,7 @@ class AuthRemoteDatasources {
     required String password,
   }) async {
     try {
-      return await firebaseInstance.signInWithEmailAndPassword(
+      return await authInstance.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -26,7 +40,7 @@ class AuthRemoteDatasources {
     required String password,
   }) async {
     try {
-      return await firebaseInstance.createUserWithEmailAndPassword(
+      return await authInstance.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -37,7 +51,7 @@ class AuthRemoteDatasources {
 
   // ~ Logout User
   Future<void> logOut() async {
-    await firebaseInstance.signOut();
+    await authInstance.signOut();
   }
 }
 

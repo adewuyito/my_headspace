@@ -20,7 +20,9 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => CreateAccountProvider()),
+        ChangeNotifierProvider(
+          create: (_) => serviceLocator.getIt<CreateAccountProvider>(),
+        ),
 
         ChangeNotifierProvider(
           create: (_) => serviceLocator.getIt<PersonalisationProvider>(),
