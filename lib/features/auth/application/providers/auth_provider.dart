@@ -83,13 +83,17 @@ class AuthProvider extends ChangeNotifier {
       }
 
       notifyListeners();
+      await Future.delayed(const Duration(milliseconds: 100));
+
       return true;
     } on FirebaseAuthException catch (e) {
       _errorMessage = _handleAuthException(e);
+      _authState = _authState.copiedWithIsLoading(false);
       notifyListeners();
       return false;
     } catch (_) {
       _errorMessage = 'An unexpected error occurred. Please try again.';
+      _authState = _authState.copiedWithIsLoading(false);
       notifyListeners();
       return false;
     }
@@ -178,54 +182,6 @@ class AuthProvider extends ChangeNotifier {
 
       case 'unauthorized-domain':
         return 'This domain is not authorized for OAuth operations.';
-
-      // ============ PHONE AUTH ERRORS ============
-      case 'invalid-phone-number':
-        return 'The phone number format is invalid.';
-
-      case 'missing-phone-number':
-        return 'Please provide a phone number.';
-
-      case 'quota-exceeded':
-        return 'SMS quota exceeded. Please try again later.';
-
-      case 'captcha-check-failed':
-        return 'reCAPTCHA verification failed. Please try again.';
-
-      case 'invalid-verification-code':
-        return 'The verification code is invalid.';
-
-      case 'invalid-verification-id':
-        return 'The verification ID is invalid.';
-
-      case 'session-expired':
-        return 'The SMS code has expired. Please request a new one.';
-
-      // ============ MULTI-FACTOR AUTH ERRORS ============
-      case 'multi-factor-auth-required':
-        return 'Multi-factor authentication is required.';
-
-      case 'invalid-multi-factor-session':
-        return 'Invalid multi-factor session.';
-
-      case 'missing-multi-factor-info':
-        return 'Multi-factor information is missing.';
-
-      case 'maximum-second-factor-count-exceeded':
-        return 'Maximum number of second factors exceeded.';
-
-      // ============ ADMIN & SECURITY ERRORS ============
-      case 'admin-restricted-operation':
-        return 'This operation is restricted to administrators only.';
-
-      case 'app-not-authorized':
-        return 'This app is not authorized to use Firebase Authentication.';
-
-      case 'app-not-installed':
-        return 'The requested app is not installed.';
-
-      case 'internal-error':
-        return 'An internal error occurred. Please try again.';
 
       // ============ DEFAULT ============
       default:

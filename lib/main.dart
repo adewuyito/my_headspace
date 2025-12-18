@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:my_headspace/features/auth/application/providers/create_account_provider.dart';
 import 'package:my_headspace/features/auth/domain/repository/auth_repository.dart';
 import 'package:my_headspace/firebase_options.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,8 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => CreateAccountProvider()),
+
         ChangeNotifierProvider(
           create: (_) => serviceLocator.getIt<PersonalisationProvider>(),
         ),

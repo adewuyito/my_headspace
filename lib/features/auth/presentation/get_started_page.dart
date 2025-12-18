@@ -62,7 +62,7 @@ class GetStartedPage extends StatelessWidget {
                       elevation: 1,
                     ),
                     onPressed: () {
-                      AppNavigator.of(context).push(CreateAccountRoute1());
+                      AppNavigator.of(context).push(SignupTabviewRoute());
                     },
                     child: Text("Get Started"),
                   ),

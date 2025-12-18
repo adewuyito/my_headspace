@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:my_headspace/core/utils/input_validator.dart';
 import 'package:my_headspace/features/auth/application/providers/auth_provider.dart';
 import 'package:my_headspace/gen/assets.gen.dart';
 import 'package:my_headspace/gen/colors.gen.dart';
@@ -74,6 +75,7 @@ class LoginPage extends HookWidget {
                   FromTextInputField(
                     controller: emailController,
                     label: "Email address",
+                    validator: InputValidatorUtils.validEmailAddress,
                   ),
 
                   const SizedBox(height: 29),
@@ -126,7 +128,7 @@ class LoginPage extends HookWidget {
                   ),
                   BaseText.link(
                     onTapped: () {
-                      AppNavigator.of(context).push(CreateAccountRoute1());
+                      AppNavigator.of(context).push(SignupTabviewRoute());
                     },
                     text: "Create account",
                     style: hpStyles.m14.copyWith(color: ColorName.appOrange),

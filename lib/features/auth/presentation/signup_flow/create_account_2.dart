@@ -5,14 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_headspace/core/constants/styles.dart';
+import 'package:my_headspace/core/utils/input_validator.dart';
 import 'package:my_headspace/features/auth/application/providers/auth_provider.dart';
+import 'package:my_headspace/features/auth/application/providers/create_account_provider.dart';
 import 'package:my_headspace/gen/assets.gen.dart';
 import 'package:my_headspace/gen/colors.gen.dart';
-import 'package:my_headspace/routes/app_navigator.dart';
 import 'package:my_headspace/routes/app_route.gr.dart';
-import 'package:my_headspace/service/service_locator.dart';
 import 'package:my_headspace/shared/widgets/shared_textfield.dart';
 import 'package:my_headspace/shared/widgets/toc_pp.dart';
+import 'package:provider/provider.dart';
 
 @routePage
 class CreateAccountPage2 extends HookWidget {
@@ -21,29 +22,50 @@ class CreateAccountPage2 extends HookWidget {
   @override
   Widget build(BuildContext context) {
     // ~ Page Controller
-    final emailController = useTextEditingController(); 
-    final usernameNameController = useTextEditingController(); 
+    final emailController = useTextEditingController();
+    final usernameNameController = useTextEditingController();
     final passwordController = useTextEditingController();
     final repasswordController = useTextEditingController();
 
+    final _isLoading = context.watch<AuthProvider>().isLoading;
+
     // ~Provider
-    final authProvider = serviceLocator.getIt<AuthProvider>();
+    final createAccountProvider = context.read<CreateAccountProvider>();
+
+    Future<void> _createUser() async {
+      if (!createAccountProvider.formKey.currentState!.validate()) return;
+
+      // ~ Updated user data
+      createAccountProvider.userData.copyWith(
+        username: usernameNameController.text.trim(),
+      );
+
+      final authProvider = context.read<AuthProvider>();
+      final success = await authProvider.signupUserWithEmailAndPassword(
+        emailController.text.trim(),
+        passwordController.text,
+      );
+
+      // TODO!: Save user data on success to firestore
+
+      if (!context.mounted) return;
+
+      if (success) {
+        context.router.replaceAll([const ApplicationNavigatorRoute()]);
+
+        // TODO!: Move through the permissions view if never done
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          // TODO: Use snackbar util
+          SnackBar(
+            content: Text(authProvider.errorMessage ?? 'Login failed'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
 
     return Scaffold(
-      appBar: AppBar(
-        leading: AutoLeadingButton(),
-        actions: [
-          TextButton(
-            onPressed: () {
-              AppNavigator.of(context).push(LoginRoute());
-            },
-            child: Text(
-              "Log in",
-              style: hpStyles.b16.copyWith(color: ColorName.appOrange),
-            ),
-          ),
-        ],
-      ),
       body: Padding(
         padding:
             const EdgeInsets.symmetric(horizontal: 38.0) +
@@ -76,21 +98,29 @@ class CreateAccountPage2 extends HookWidget {
                       FromTextInputField(
                         controller: usernameNameController,
                         label: "Username",
+                        validator: InputValidatorUtils.isUsernameValid,
                       ),
 
                       FromTextInputField(
                         controller: emailController,
                         label: "Email address",
+                        validator: InputValidatorUtils.validEmailAddress,
                       ),
 
                       FromTextInputField(
                         controller: passwordController,
                         label: "Password",
+                        // validator: InputValidatorUtils.,
                       ),
 
                       FromTextInputField(
                         controller: repasswordController,
                         label: "Confirm Password",
+                        validator: (value) =>
+                            InputValidatorUtils.confirmPassword(
+                              value!,
+                              passwordController.text,
+                            ),
                       ),
                     ],
                   ),
@@ -104,10 +134,10 @@ class CreateAccountPage2 extends HookWidget {
             const SizedBox(height: 35),
 
             ElevatedButton(
-              onPressed: () {
-                AppNavigator.of(context).push(VerifyMailRoute());
-              },
-              child: Text("Agree and continue"),
+              onPressed: _isLoading ? null : _createUser,
+              child: _isLoading
+                  ? const CircularProgressIndicator()
+                  : Text("Agree and continue"),
             ),
           ],
         ),
