@@ -13,7 +13,7 @@ class ServiceLocator {
   void configure() {
     // _getit.registerSingleton<My_Provider>(My_Provider());
 
-    _getit.registerLazySingleton(() => CreateAccountProvider());
+    _getit.registerLazySingleton<CreateAccountProvider>(() => CreateAccountProvider());
 
     _getit.registerSingleton<AuthGuard>(AuthGuard());
 
