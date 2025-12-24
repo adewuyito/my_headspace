@@ -14,15 +14,6 @@ class GetStartedPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () async {
-      //     if (serviceLocator.getIt<AuthProvider>().isAuthenticated) {
-      //       debugPrint("User is authed");
-      //     } else {
-      //       debugPrint("User is not authed");
-      //     }
-      //   },
-      // ),
       body: Stack(
         children: [
           Container(
