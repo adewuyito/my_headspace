@@ -48,3 +48,8 @@ app.*.map.json
 .fvm/
 # FVM
 .fvm/flutter_sdk
+
+# Firebase Files
+/firebase.json
+.firebaserc
+firebase-debug.log
