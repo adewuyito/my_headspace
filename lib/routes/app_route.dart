@@ -28,11 +28,11 @@ class AppRouter extends RootStackRouter {
 
   @override
   List<AutoRoute> get routes => [
-    AutoRoute(page: SplashRoute.page, initial: true),
+    AutoRoute(page: SplashRoute.page),
 
     AutoRoute(page: RegistrationSuccessfulRoute.page),
 
-    AutoRoute(page: GetStartedRoute.page),
+    AutoRoute(page: GetStartedRoute.page, initial: true),
 
     // ~ Home View
     AutoRoute(
