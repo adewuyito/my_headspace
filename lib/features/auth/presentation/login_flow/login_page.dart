@@ -83,6 +83,8 @@ class LoginPage extends HookWidget {
                   FromTextInputField(
                     controller: passwordController,
                     label: "Password",
+                    validator: (value) =>
+                        InputValidatorUtils.nonEmptyField('Password', value),
                   ),
                 ],
               ),
@@ -120,6 +122,7 @@ class LoginPage extends HookWidget {
               const SizedBox(height: 21),
 
               RichTextWidget(
+                key: Key('create-account'),
                 styleForAll: hpStyles.r14.copyWith(letterSpacing: -.1),
                 texts: [
                   BaseText.plain(
