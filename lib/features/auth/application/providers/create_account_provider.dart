@@ -11,7 +11,7 @@ class CreateAccountProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool get isEmpty  => userData == UserData.empty();
+  bool get isEmpty => userData == UserData.empty();
 
   void updateUserData({
     String? username,
@@ -29,6 +29,11 @@ class CreateAccountProvider extends ChangeNotifier {
       gender: gender,
       phone: phone,
     );
+    notifyListeners();
+  }
+
+  void clearUserData() {
+    userData = UserData.empty();
     notifyListeners();
   }
 }

@@ -8,8 +8,29 @@ import 'package:my_headspace/routes/app_route.gr.dart';
 import 'package:provider/provider.dart';
 
 @RoutePage(name: 'SignupTabviewRoute')
-class SignupTabViewPage extends StatelessWidget {
+class SignupTabViewPage extends StatefulWidget {
   const SignupTabViewPage({super.key});
+
+  @override
+  State<SignupTabViewPage> createState() => _SignupTabViewPageState();
+}
+
+class _SignupTabViewPageState extends State<SignupTabViewPage> {
+  late CreateAccountProvider _createAccountProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    _createAccountProvider = context.read<CreateAccountProvider>();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _createAccountProvider.clearUserData();
+    });
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

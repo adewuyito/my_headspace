@@ -18,6 +18,9 @@ class CreateAccountPage1 extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    // ~ Provider
+    final createAccountProvider = context.read<CreateAccountProvider>();
+
     // ~ Text Controller
     final firstnameController = useTextEditingController();
     final lastnameController = useTextEditingController();
@@ -29,7 +32,6 @@ class CreateAccountPage1 extends HookWidget {
     final _formKey = GlobalKey<FormState>();
 
     // ~ Provider
-    final createAccountProvider = context.read<CreateAccountProvider>();
 
     void navigateToNextPage() {
       // TODO: Check form key
@@ -89,6 +91,7 @@ class CreateAccountPage1 extends HookWidget {
                       ),
 
                       DateTimeFormField(
+                        initialValue: userAgeController.value,
                         mode: DateTimeFieldPickerMode.date,
                         pickerPlatform: DateTimeFieldPickerPlatform.material,
                         decoration: InputDecoration(
@@ -107,10 +110,15 @@ class CreateAccountPage1 extends HookWidget {
                         initialPickerDateTime: DateTime.now(),
                         onChanged: (DateTime? value) {
                           userAgeController.value = value;
+                          createAccountProvider.updateUserData(
+                            dateOfBirth: value,
+                          );
                         },
                       ),
 
                       DropdownMenuFormField<UserGender>(
+                        initialSelection:
+                            userGenderController.value, // Added this
                         width: double.infinity,
                         label: Text(
                           "Gender",
@@ -121,6 +129,9 @@ class CreateAccountPage1 extends HookWidget {
                         trailingIcon: Assets.icons.caratDown.svg(),
                         onSelected: (gender) {
                           userGenderController.value = gender;
+                          createAccountProvider.updateUserData(
+                            gender: gender,
+                          ); // Update provider immediately
                         },
                         selectedTrailingIcon: RotatedBox(
                           quarterTurns: 2,

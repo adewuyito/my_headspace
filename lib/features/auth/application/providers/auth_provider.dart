@@ -90,8 +90,7 @@ class AuthProvider extends ChangeNotifier {
       );
 
       if (credential != null) {
-        final userDataProvider = serviceLocator.getIt<CreateAccountProvider>();
-        final userData = userDataProvider.userData;
+        final userData = _userData.userData;
 
         await _authRepo.updateUser(data: userData, userid: credential.uid);
       }
