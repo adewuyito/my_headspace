@@ -13,11 +13,12 @@ class AuthProvider extends ChangeNotifier {
   final FirebaseAuth _firebaseAuth;
   String? _errorMessage;
 
-  User? _user;
+  Stream<AuthState> get user =>
+      _firebaseAuth.authStateChanges().map(_userFromFirebase);
 
   bool get isLoading => _authState.isLoading;
-  String? get userId => _user?.uid;
-  bool get isAuthenticated => _user != null;
+  String? get userId => _authState.userId;
+  bool get isAuthenticated => _authState.result == AuthResult.authSuccess;
   String? get errorMessage => _errorMessage;
 
   AuthProvider({
@@ -28,10 +29,28 @@ class AuthProvider extends ChangeNotifier {
        _userData =
            userDataProvider ?? serviceLocator.getIt<CreateAccountProvider>(),
        _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance {
-    _firebaseAuth.authStateChanges().listen((user) {
-      _user = user;
-      notifyListeners();
-    });
+    _firebaseAuth.authStateChanges().listen(onAuthStateChanged);
+  }
+
+  AuthState _userFromFirebase(User? user) {
+    if (user == null) {
+      return AuthState.unknown();
+    }
+
+    return AuthState(
+      result: AuthResult.authSuccess,
+      isLoading: false,
+      userId: user.uid,
+    );
+  }
+
+  Future<void> onAuthStateChanged(User? firebaseUser) async {
+    if (firebaseUser == null) {
+      _authState = AuthState.unknown();
+    } else {
+      _authState = _userFromFirebase(firebaseUser);
+    }
+    notifyListeners();
   }
 
   Future<bool> loginUserWithEmail(String email, String password) async {
@@ -40,24 +59,8 @@ class AuthProvider extends ChangeNotifier {
       _authState = _authState.copyWith(isLoading: true);
       notifyListeners();
 
-      final user = await _authRepo.loginUserWithEmail(
-        email: email,
-        password: password,
-      );
+      await _authRepo.loginUserWithEmail(email: email, password: password);
 
-      // Wait for the authStateChanges stream to emit the new user state
-      if (user != null) {
-        // Wait for _user to be set by the authStateChanges listener
-        await _waitForAuthStateUpdate(user.uid);
-
-        _authState = _authState.copyWith(
-          result: AuthResult.authSuccess,
-          isLoading: false,
-          userId: user.uid,
-        );
-      }
-
-      notifyListeners();
       return true;
     } on FirebaseAuthException catch (e) {
       _errorMessage = AuthExceptions.handleAuthException(e);
@@ -69,27 +72,6 @@ class AuthProvider extends ChangeNotifier {
       _authState = _authState.copyWith(isLoading: false);
       notifyListeners();
       return false;
-    }
-  }
-
-  /// Waits for the authStateChanges stream to update the _user field
-  /// This ensures isAuthenticated returns true before navigation occurs
-  Future<void> _waitForAuthStateUpdate(String expectedUserId) async {
-    // If _user is already set with the correct ID, return immediately
-    if (_user?.uid == expectedUserId) return;
-
-    // Wait for up to 3 seconds for the auth state to update
-    const maxWaitTime = Duration(seconds: 3);
-    const checkInterval = Duration(milliseconds: 50);
-    final startTime = DateTime.now();
-
-    while (_user?.uid != expectedUserId) {
-      if (DateTime.now().difference(startTime) > maxWaitTime) {
-        // Timeout - force update from current user
-        _user = _firebaseAuth.currentUser;
-        break;
-      }
-      await Future.delayed(checkInterval);
     }
   }
 
@@ -112,17 +94,7 @@ class AuthProvider extends ChangeNotifier {
         final userData = userDataProvider.userData;
 
         await _authRepo.updateUser(data: userData, userid: credential.uid);
-
-        // Wait for the authStateChanges stream to emit the new user state
-        await _waitForAuthStateUpdate(credential.uid);
       }
-
-      _authState = AuthState(
-        result: AuthResult.authSuccess,
-        isLoading: false,
-        userId: credential?.uid,
-      );
-      notifyListeners();
 
       return true;
     } on FirebaseAuthException catch (e) {
@@ -140,7 +112,6 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> logOutUser() async {
     _authState = AuthState.unknown();
-    _user = null;
     _errorMessage = null;
     await _authRepo.logOut();
     notifyListeners();
