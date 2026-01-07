@@ -37,7 +37,7 @@ class AuthProvider extends ChangeNotifier {
   Future<bool> loginUserWithEmail(String email, String password) async {
     try {
       _errorMessage = null;
-      _authState = _authState.copiedWithIsLoading(true);
+      _authState = _authState.copyWith(isLoading: true);
       notifyListeners();
 
       final user = await _authRepo.loginUserWithEmail(
@@ -45,9 +45,12 @@ class AuthProvider extends ChangeNotifier {
         password: password,
       );
 
-      // ~ Update The AuthState
+      // Wait for the authStateChanges stream to emit the new user state
       if (user != null) {
-        _authState = AuthState(
+        // Wait for _user to be set by the authStateChanges listener
+        await _waitForAuthStateUpdate(user.uid);
+
+        _authState = _authState.copyWith(
           result: AuthResult.authSuccess,
           isLoading: false,
           userId: user.uid,
@@ -55,19 +58,38 @@ class AuthProvider extends ChangeNotifier {
       }
 
       notifyListeners();
-      await Future.delayed(const Duration(milliseconds: 100));
-
       return true;
     } on FirebaseAuthException catch (e) {
       _errorMessage = AuthExceptions.handleAuthException(e);
-      _authState = _authState.copiedWithIsLoading(false);
+      _authState = _authState.copyWith(isLoading: false);
       notifyListeners();
       return false;
     } catch (e) {
       _errorMessage = 'An unexpected error occurred. Please try again.';
-      _authState = _authState.copiedWithIsLoading(false);
+      _authState = _authState.copyWith(isLoading: false);
       notifyListeners();
       return false;
+    }
+  }
+
+  /// Waits for the authStateChanges stream to update the _user field
+  /// This ensures isAuthenticated returns true before navigation occurs
+  Future<void> _waitForAuthStateUpdate(String expectedUserId) async {
+    // If _user is already set with the correct ID, return immediately
+    if (_user?.uid == expectedUserId) return;
+
+    // Wait for up to 3 seconds for the auth state to update
+    const maxWaitTime = Duration(seconds: 3);
+    const checkInterval = Duration(milliseconds: 50);
+    final startTime = DateTime.now();
+
+    while (_user?.uid != expectedUserId) {
+      if (DateTime.now().difference(startTime) > maxWaitTime) {
+        // Timeout - force update from current user
+        _user = _firebaseAuth.currentUser;
+        break;
+      }
+      await Future.delayed(checkInterval);
     }
   }
 
@@ -77,7 +99,7 @@ class AuthProvider extends ChangeNotifier {
   ) async {
     try {
       _errorMessage = null;
-      _authState = _authState.copiedWithIsLoading(true);
+      _authState = _authState.copyWith(isLoading: true);
       notifyListeners();
 
       final credential = await _authRepo.signupUserWithEmail(
@@ -90,6 +112,9 @@ class AuthProvider extends ChangeNotifier {
         final userData = userDataProvider.userData;
 
         await _authRepo.updateUser(data: userData, userid: credential.uid);
+
+        // Wait for the authStateChanges stream to emit the new user state
+        await _waitForAuthStateUpdate(credential.uid);
       }
 
       _authState = AuthState(
@@ -98,17 +123,16 @@ class AuthProvider extends ChangeNotifier {
         userId: credential?.uid,
       );
       notifyListeners();
-      await Future.delayed(const Duration(milliseconds: 100));
 
       return true;
     } on FirebaseAuthException catch (e) {
       _errorMessage = AuthExceptions.handleAuthException(e);
-      _authState = _authState.copiedWithIsLoading(false);
+      _authState = _authState.copyWith(isLoading: false);
       notifyListeners();
       return false;
     } catch (e) {
       _errorMessage = 'An unexpected error occurred. Please try again.';
-      _authState = _authState.copiedWithIsLoading(false);
+      _authState = _authState.copyWith(isLoading: false);
       notifyListeners();
       return false;
     }

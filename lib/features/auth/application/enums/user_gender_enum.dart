@@ -5,7 +5,7 @@ enum UserGender {
   static UserGender? parseGender(String? value) {
     if (value == null) return null;
     return UserGender.values.firstWhere(
-      (e) => e.name == value,
+      (e) => e.name == value.toLowerCase(),
       orElse: () => UserGender.male,
     );
   }

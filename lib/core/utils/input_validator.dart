@@ -12,7 +12,7 @@ class InputValidatorUtils {
 
   static String? validEmailAddress(String? email) {
     if (email == null || email.trim().isEmpty) {
-      return'Email is required' ;
+      return 'Email is required';
     }
 
     if (isEmailAddressValid(email.trim())) {

@@ -22,7 +22,7 @@ void main() {
   });
 
   group("Check provider setters", () {
-    test("Set user data field to a valie", () {
+    test("Set user data field to a value", () {
       bool notified = false;
       final String username = "adewuyito";
       

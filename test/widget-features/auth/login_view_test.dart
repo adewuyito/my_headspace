@@ -23,12 +23,12 @@ void main() {
   late app_auth.AuthProvider authProvider;
   late MockAuthRepository mockAuthRepository;
   late MockFirebaseAuth mockFirebaseAuth;
-  late MockCreateAccountProvider mockcreateAccountProvider;
+  late MockCreateAccountProvider mockCreateAccountProvider;
 
   setUp(() {
     mockAuthRepository = MockAuthRepository();
     mockFirebaseAuth = MockFirebaseAuth();
-    mockcreateAccountProvider = MockCreateAccountProvider();
+    mockCreateAccountProvider = MockCreateAccountProvider();
 
     when(
       () => mockFirebaseAuth.authStateChanges(),
@@ -36,7 +36,7 @@ void main() {
 
     authProvider = app_auth.AuthProvider(
       authRepo: mockAuthRepository,
-      userDataProvider: mockcreateAccountProvider,
+      userDataProvider: mockCreateAccountProvider,
       firebaseAuth: mockFirebaseAuth,
     );
 

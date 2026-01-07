@@ -257,7 +257,7 @@ class PersonalisationRoute extends _i20.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i14.ProfileVeiw]
+/// [_i14.ProfileView]
 class ProfileVeiw extends _i20.PageRouteInfo<void> {
   const ProfileVeiw({List<_i20.PageRouteInfo>? children})
     : super(ProfileVeiw.name, initialChildren: children);
@@ -267,7 +267,7 @@ class ProfileVeiw extends _i20.PageRouteInfo<void> {
   static _i20.PageInfo page = _i20.PageInfo(
     name,
     builder: (data) {
-      return const _i14.ProfileVeiw();
+      return const _i14.ProfileView();
     },
   );
 }

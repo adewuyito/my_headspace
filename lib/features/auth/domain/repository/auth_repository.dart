@@ -75,9 +75,12 @@ class AuthState {
       isLoading = false,
       userId = null;
 
-  // ~ Initiate Loading
-  AuthState copiedWithIsLoading(bool isLoading) =>
-      AuthState(result: result, isLoading: isLoading, userId: userId);
+  AuthState copyWith({AuthResult? result, UserId? userId, bool? isLoading}) =>
+      AuthState(
+        result: result ?? this.result,
+        isLoading: isLoading ?? this.isLoading,
+        userId: userId ?? this.userId,
+      );
 
   @override
   bool operator ==(covariant AuthState other) =>

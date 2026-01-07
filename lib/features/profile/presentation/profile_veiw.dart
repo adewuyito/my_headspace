@@ -7,8 +7,8 @@ import 'package:my_headspace/gen/colors.gen.dart';
 import 'package:provider/provider.dart';
 
 @routePage
-class ProfileVeiw extends StatelessWidget {
-  const ProfileVeiw({super.key});
+class ProfileView extends StatelessWidget {
+  const ProfileView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +74,7 @@ class ProfileVeiw extends StatelessWidget {
                   ),
                   title: Text("Change Password", style: hpStyles.sb14),
                   subtitle: Text(
-                    "Change password",
+                    "Update your account password",
                     style: hpStyles.r12.copyWith(
                       color: Color.fromRGBO(151, 151, 151, 1),
                     ),
@@ -86,7 +86,7 @@ class ProfileVeiw extends StatelessWidget {
                   leading: Assets.icons.biometricIcon.svg(),
                   title: Text("Biometric login", style: hpStyles.sb14),
                   subtitle: Text(
-                    "Change password",
+                    "Enable fingerprint or face ID login",
                     style: hpStyles.r12.copyWith(
                       color: Color.fromRGBO(151, 151, 151, 1),
                     ),
@@ -98,7 +98,7 @@ class ProfileVeiw extends StatelessWidget {
                   leading: Assets.icons.signOutIccon.svg(),
                   title: Text("Sign out", style: hpStyles.sb14),
                   subtitle: Text(
-                    "Sign out",
+                    "Leave the app",
                     style: hpStyles.r12.copyWith(
                       color: Color.fromRGBO(151, 151, 151, 1),
                     ),
