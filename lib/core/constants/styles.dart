@@ -29,6 +29,13 @@ class _AppStyles {
   );
 
   //  ~ Regular Style
+  final r12 = const TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w400,
+    height: 1.5,
+    fontVariations: [FontVariation('wght', 400)],
+  );
+
   final r13 = const TextStyle(
     fontSize: 13,
     fontWeight: FontWeight.w400,
@@ -115,6 +122,12 @@ class _AppStyles {
   );
 
   // ~ Semi bold
+  final sb10 = const TextStyle(
+    fontSize: 10,
+    height: 1.45,
+    fontVariations: [FontVariation('wght', 600)],
+  );
+
   final sb14 = const TextStyle(
     fontSize: 14,
     height: 1.45,
@@ -126,7 +139,6 @@ class _AppStyles {
     height: 1.45,
     fontVariations: [FontVariation('wght', 600)],
   );
-
 
   final sb16 = const TextStyle(
     fontSize: 16,
@@ -157,7 +169,6 @@ class _AppStyles {
     height: 1.45,
     fontVariations: [FontVariation('wght', 600)],
   );
-
 
   //  ~ Bold Style
   final b9 = const TextStyle(

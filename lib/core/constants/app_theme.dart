@@ -71,6 +71,12 @@ final ThemeData headspaceTheme = baseTheme.copyWith(
     border: inputBorderBase,
     enabledBorder: inputBorderBase,
     focusedBorder: inputBorderBase,
+    errorBorder: OutlineInputBorder(
+      borderSide: BorderSide(color: ColorName.error),
+    ),
+    focusedErrorBorder: OutlineInputBorder(
+      borderSide: BorderSide(color: ColorName.error),
+    ),
     fillColor: Colors.transparent,
     filled: false,
     hintStyle: hpStyles.r14, //.copyWith(color: ColorName.textGrayB3),

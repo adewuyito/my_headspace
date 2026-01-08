@@ -17,6 +17,10 @@ import 'package:vector_graphics/vector_graphics.dart' as _vg;
 class $AssetsIconsGen {
   const $AssetsIconsGen();
 
+  /// File path: assets/icons/biometric_icon.svg
+  SvgGenImage get biometricIcon =>
+      const SvgGenImage('assets/icons/biometric_icon.svg');
+
   /// File path: assets/icons/carat_down.svg
   SvgGenImage get caratDown => const SvgGenImage('assets/icons/carat_down.svg');
 
@@ -30,6 +34,10 @@ class $AssetsIconsGen {
   /// File path: assets/icons/discover_icon.svg
   SvgGenImage get discoverIcon =>
       const SvgGenImage('assets/icons/discover_icon.svg');
+
+  /// File path: assets/icons/edit_account_icon.svg
+  SvgGenImage get editAccountIcon =>
+      const SvgGenImage('assets/icons/edit_account_icon.svg');
 
   /// File path: assets/icons/fingerprint.svg
   SvgGenImage get fingerprint =>
@@ -55,8 +63,16 @@ class $AssetsIconsGen {
   SvgGenImage get notificationsIcon =>
       const SvgGenImage('assets/icons/notifications_icon.svg');
 
+  /// File path: assets/icons/personalization_icon.svg
+  SvgGenImage get personalizationIcon =>
+      const SvgGenImage('assets/icons/personalization_icon.svg');
+
   /// File path: assets/icons/plus_icon.svg
   SvgGenImage get plusIcon => const SvgGenImage('assets/icons/plus_icon.svg');
+
+  /// File path: assets/icons/privacy_icon.svg
+  SvgGenImage get privacyIcon =>
+      const SvgGenImage('assets/icons/privacy_icon.svg');
 
   /// File path: assets/icons/profile_icon.svg
   SvgGenImage get profileIcon =>
@@ -64,6 +80,10 @@ class $AssetsIconsGen {
 
   /// File path: assets/icons/share_icon.svg
   SvgGenImage get shareIcon => const SvgGenImage('assets/icons/share_icon.svg');
+
+  /// File path: assets/icons/sign_out_iccon.svg
+  SvgGenImage get signOutIccon =>
+      const SvgGenImage('assets/icons/sign_out_iccon.svg');
 
   /// File path: assets/icons/signup_icon.svg
   SvgGenImage get signupIcon =>
@@ -78,10 +98,12 @@ class $AssetsIconsGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
+    biometricIcon,
     caratDown,
     caratLeft,
     caratRight,
     discoverIcon,
+    editAccountIcon,
     fingerprint,
     heartIcon,
     homeIcon,
@@ -89,9 +111,12 @@ class $AssetsIconsGen {
     likeIcon,
     minusIcon,
     notificationsIcon,
+    personalizationIcon,
     plusIcon,
+    privacyIcon,
     profileIcon,
     shareIcon,
+    signOutIccon,
     signupIcon,
     successCon,
     timerIcon,

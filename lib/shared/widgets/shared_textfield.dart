@@ -7,15 +7,21 @@ class FromTextInputField extends StatelessWidget {
     super.key,
     required this.controller,
     this.label = "",
+    this.validator,
+    this.validateMode,
   });
 
   final TextEditingController controller;
   final String? label;
+  final Validator validator;
+  final AutovalidateMode? validateMode;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      autovalidateMode: validateMode,
       controller: controller,
+      validator: validator,
       decoration: InputDecoration(
         hint: Text(
           label ?? "",
@@ -25,3 +31,5 @@ class FromTextInputField extends StatelessWidget {
     );
   }
 }
+
+typedef Validator = String? Function(String?)?;

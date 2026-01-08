@@ -24,19 +24,27 @@ class TransitionsBuilder {
 
 @AutoRouterConfig(replaceInRouteName: 'Page|View|Screen,Route')
 class AppRouter extends RootStackRouter {
-  AppRouter({required this.authGuard});
-  AuthGuard authGuard;
+  AppRouter();
 
   @override
   List<AutoRoute> get routes => [
-    // ~ Home View
-    AutoRoute(page: HomeRoute.page),
-    AutoRoute(page: PersonalisationRoute.page),
+    AutoRoute(page: SplashRoute.page),
 
+    AutoRoute(page: RegistrationSuccessfulRoute.page),
+
+    AutoRoute(page: GetStartedRoute.page, initial: true),
+
+    // ~ Home View
     AutoRoute(
       page: ApplicationNavigatorRoute.page,
-      children: [AutoRoute(page: HomeRoute.page)],
+      guards: [AuthGuard()],
+      children: [
+        AutoRoute(page: HomeRoute.page),
+        AutoRoute(page: ProfileVeiw.page),
+      ],
     ),
+
+    AutoRoute(page: PersonalisationRoute.page),
 
     // ~ Permission View
     AutoRoute(page: NotificationPermissonRoute.page),
@@ -50,15 +58,16 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: LoginRoute.page),
 
     // ~ Create Account View
-    AutoRoute(page: CreateAccountRoute1.page),
-    AutoRoute(page: CreateAccountRoute2.page),
-    AutoRoute(page: RegistrationSuccessfulRoute.page),
-
-    AutoRoute(page: GetStartedRoute.page),
+    AutoRoute(
+      page: SignupTabviewRoute.page,
+      children: [
+        AutoRoute(page: CreateAccountRoute1.page),
+        AutoRoute(page: CreateAccountRoute2.page),
+      ],
+    ),
 
     // ~ Onboarding PageView
     AutoRoute(
-      initial: true,
       page: OnboardingTabviewRoute.page,
       children: [
         AutoRoute(page: OnboardingFirstTabRoute.page),
@@ -69,12 +78,12 @@ class AppRouter extends RootStackRouter {
   ];
 
   @override
-  List<AutoRouteGuard> get guards => [authGuard];
+  List<AutoRouteGuard> get guards => [];
 
-  void updateAuthGuard(AuthGuard guard) {
-    authGuard = guard;
-    notifyListeners();
-  }
+  // void updateAuthGuard(AuthGuard guard) {
+  //   authGuard = guard;
+  //   notifyListeners();
+  // }
 
   // CustomRoute routeWithFadeTransition({
   //   required PageInfo<dynamic> page,

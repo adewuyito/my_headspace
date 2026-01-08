@@ -1,54 +1,42 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:my_headspace/features/auth/application/providers/create_account_provider.dart';
+import 'package:my_headspace/features/auth/domain/repository/auth_repository.dart';
+import 'package:my_headspace/firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:my_headspace/app.dart';
-import 'package:my_headspace/features/auth/application/providers/reset_password_provider.dart';
 import 'package:my_headspace/features/home/application/providers/personalisation_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:my_headspace/routes/app_route.dart';
 import 'package:my_headspace/routes/app_route_guard.dart';
 import 'package:my_headspace/service/service_locator.dart';
-import 'package:my_headspace/features/auth/data/auth_provider.dart';
-import 'package:my_headspace/features/auth/application/providers/login_provider.dart';
-import 'package:my_headspace/features/auth/application/providers/signup_provider.dart';
+import 'package:my_headspace/features/auth/application/providers/auth_provider.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
   serviceLocator.configure();
 
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => serviceLocator.getIt<PersonalisationProvider>()),
-
-        Provider(create: (context) => serviceLocator.getIt<AuthGuard>()),
-
         ChangeNotifierProvider(
-          create: (context) => serviceLocator.getIt<SignupProvider>(),
+          create: (_) => serviceLocator.getIt<CreateAccountProvider>(),
         ),
 
         ChangeNotifierProvider(
-          create: (context) => serviceLocator.getIt<LoginProvider>(),
+          create: (_) => serviceLocator.getIt<PersonalisationProvider>(),
         ),
+
+        Provider(create: (_) => serviceLocator.getIt<AuthRepository>()),
+
+        Provider(create: (_) => serviceLocator.getIt<AuthGuard>()),
 
         ChangeNotifierProvider(
-          create: (context) => serviceLocator.getIt<ResetPasswordProvider>(),
+          create: (_) => serviceLocator.getIt<AuthProvider>(),
         ),
 
-        ChangeNotifierProvider(
-          create: (context) => serviceLocator.getIt<AuthProvider>(),
-        ),
-
-        ChangeNotifierProxyProvider<AuthGuard, AppRouter>(
-          create: (context) {
-            final guard = Provider.of<AuthGuard>(context, listen: false);
-            return AppRouter(authGuard: guard);
-          },
-          update: (cxt, guard, router) {
-            if (router != null) {
-              router.updateAuthGuard(guard);
-              return router;
-            }
-            return AppRouter(authGuard: guard);
-          },
-        ),
+        ChangeNotifierProvider<AppRouter>(create: (_) => AppRouter()),
       ],
       child: const MainApp(),
     ),

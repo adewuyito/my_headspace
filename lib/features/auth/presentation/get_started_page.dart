@@ -7,7 +7,7 @@ import 'package:my_headspace/routes/app_route.gr.dart';
 import 'package:my_headspace/shared/components/rich_text/base_text.dart';
 import 'package:my_headspace/shared/components/rich_text/rich_text_widget.dart';
 
-@routePage
+@RoutePage(name: 'GetStartedRoute')
 class GetStartedPage extends StatelessWidget {
   const GetStartedPage({super.key});
 
@@ -53,7 +53,7 @@ class GetStartedPage extends StatelessWidget {
                       elevation: 1,
                     ),
                     onPressed: () {
-                      AppNavigator.of(context).push(CreateAccountRoute1());
+                      AppNavigator.of(context).push(SignupTabviewRoute());
                     },
                     child: Text("Get Started"),
                   ),
