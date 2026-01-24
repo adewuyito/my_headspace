@@ -53,6 +53,10 @@ final ThemeData headspaceTheme = baseTheme.copyWith(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
     ),
   ),
+  floatingActionButtonTheme: baseTheme.floatingActionButtonTheme.copyWith(
+    foregroundColor: ColorName.textPositive,
+    backgroundColor: ColorName.floatingActionButtonBackground,
+  ),
   tabBarTheme: baseTheme.tabBarTheme.copyWith(
     labelStyle: baseTheme.textTheme.bodySmall!.copyWith(
       // color: appColors.blue,

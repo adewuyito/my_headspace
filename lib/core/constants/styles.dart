@@ -58,6 +58,13 @@ class _AppStyles {
   );
 
   //  ~ Medium Style
+  final m9 = const TextStyle(
+    fontSize: 9,
+    fontWeight: FontWeight.w500,
+    height: 1,
+    fontVariations: [FontVariation('wght', 500)],
+  );
+
   final m11 = const TextStyle(
     fontSize: 11,
     fontWeight: FontWeight.w500,

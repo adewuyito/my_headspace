@@ -17,12 +17,15 @@
     <color name="green_background">#09bc45</color>
     <color name="border_grey">#7A7A7D</color>
     <color name="bottom_nav">#E5E5E5B8</color>
+    <color name="floating_action_button_background">#FF23A26D</color>
+    <color name="date_divider_background">#FFF3F0F0</color>
     
     <!-- Text Colors -->
     <color name="text_positive">#FFFFFF</color>
     <color name="text_negative">#FF000000</color> 
     <color name="text_gray78">#797878</color> 
     <color name="text_grayB3">#98A2B3</color> 
+    <color name="text_gray7D">#7A7A7D</color>
     
     <!-- <color name="text_disabled">#BDBDBD</color>
     <color name="text_on_primary">#FFFFFF</color> -->

@@ -11,7 +11,7 @@ class ApplicationNavigatorView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AutoTabsRouter.tabBar(
-      routes: [HomeRoute(), HomeRoute(), HomeRoute(), ProfileVeiw()],
+      routes: [HomeRoute(), HomeRoute(), JourneyRoute(), ProfileRoute()],
       builder: (context, child, controller) {
         final tabsRouter = AutoTabsRouter.of(context);
         return Scaffold(

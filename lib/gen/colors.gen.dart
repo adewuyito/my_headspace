@@ -35,8 +35,14 @@ class ColorName {
   /// Color: #E5E5E5B8
   static const Color bottomNav = Color(0xE5E5E5B8);
 
+  /// Color: #FFF3F0F0
+  static const Color dateDividerBackground = Color(0xFFF3F0F0);
+
   /// Color: #B00020
   static const Color error = Color(0xFFB00020);
+
+  /// Color: #FF23A26D
+  static const Color floatingActionButtonBackground = Color(0xFF23A26D);
 
   /// Color: #09bc45
   static const Color greenBackground = Color(0xFF09BC45);
@@ -55,6 +61,9 @@ class ColorName {
 
   /// Color: #797878
   static const Color textGray78 = Color(0xFF797878);
+
+  /// Color: #7A7A7D
+  static const Color textGray7D = Color(0xFF7A7A7D);
 
   /// Color: #98A2B3
   static const Color textGrayB3 = Color(0xFF98A2B3);
