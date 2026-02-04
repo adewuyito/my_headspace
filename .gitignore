@@ -53,3 +53,11 @@ app.*.map.json
 /firebase.json
 .firebaserc
 firebase-debug.log
+
+# Myfiles
+/iossss_
+/ios/.DerivedData
+/macos/.DerivedData
+/macos/.DerivedDataaaa
+/macos/DerivedData
+/macos/PodfileCopy
