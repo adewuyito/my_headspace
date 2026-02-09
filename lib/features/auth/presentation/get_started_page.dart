@@ -14,6 +14,9 @@ class GetStartedPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => AppNavigator.of(context).push(JournalExpandedRoute()),
+      ),
       body: Stack(
         children: [
           Container(

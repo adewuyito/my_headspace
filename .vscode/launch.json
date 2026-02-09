@@ -2,38 +2,25 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "my_headspace",
-            "request": "launch",
+            "name": "Flutter (Debug)",
             "type": "dart",
-            "program": "lib/main.dart"
-        },
-        {
-            "name": "my_headspace (profile)",
             "request": "launch",
-            "type": "dart",
-            "flutterMode": "profile",
-            "program": "lib/main.dart"
-        },
-        {
-            "name": "my_headspace (release)",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "release",
-            "program": "lib/main.dart"
-        },
-        {
-            "name": "Flutter (FVM)",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "debug",
             "program": "lib/main.dart",
-            "toolArgs": [
-            "offline"
-            ],
-            "cwd": "${workspaceFolder}",
-            "env": {
-                "FLUTTER_SDK": "${workspaceFolder}/.fvm/flutter_sdk"
-            }
+            "flutterMode": "debug"
+        },
+        {
+            "name": "Flutter (Profile)",
+            "type": "dart",
+            "request": "launch",
+            "program": "lib/main.dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "Flutter (Release)",
+            "type": "dart",
+            "request": "launch",
+            "program": "lib/main.dart",
+            "flutterMode": "release"
         }
     ]
 }

@@ -57,6 +57,7 @@ class LoginPage extends HookWidget {
             const EdgeInsets.symmetric(horizontal: 38.0) +
             const EdgeInsets.only(top: 10, bottom: 26),
 
+        // ~ Login form
         child: Form(
           key: _formKey,
           child: Column(
@@ -91,6 +92,7 @@ class LoginPage extends HookWidget {
 
               const SizedBox(height: 33),
 
+              // ~ Forgot Password
               TextButton(
                 onPressed: () {
                   AppNavigator.of(context).push(ResetPasswordRoute());
@@ -115,12 +117,22 @@ class LoginPage extends HookWidget {
                     ),
                   ),
                   const SizedBox(width: 25),
-                  Assets.icons.fingerprint.svg(),
+
+                  GestureDetector(
+                    onTap: () {
+                      // TODO:  Refactor this shit
+                      emailController.text = "test123@gmail.com";
+                      passwordController.text = "password123";
+                      _isLoading ? null : _loginUser();
+                    },
+                    child: Assets.icons.fingerprint.svg(),
+                  ),
                 ],
               ),
 
               const SizedBox(height: 21),
 
+              //  ~ Create account richtext
               RichTextWidget(
                 key: Key('create-account'),
                 styleForAll: hpStyles.r14.copyWith(letterSpacing: -.1),

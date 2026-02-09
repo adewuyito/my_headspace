@@ -47,6 +47,8 @@ class AppRouter extends RootStackRouter {
 
     AutoRoute(page: PersonalisationRoute.page),
 
+    AutoRoute(page: JournalExpandedRoute.page),
+
     // ~ Permission View
     AutoRoute(page: NotificationPermissonRoute.page),
     AutoRoute(page: BiometricPermissonRoute.page),

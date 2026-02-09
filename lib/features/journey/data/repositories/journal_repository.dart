@@ -1,17 +1,8 @@
 import 'package:my_headspace/features/journey/data/datasources/cloud_journal_datasources.dart';
 import 'package:my_headspace/features/journey/data/datasources/local_journal_datasources.dart';
-import 'package:my_headspace/features/journey/data/model/journal_model.dart';
-
-abstract interface class JournalRepository {
-  /// Save a new journal or update an existing on if journal does not exsist;
-  Future<JournalId> saveEntry(JournalModel journal);
-
-  /// Get an existing journal;
-  Future<JournalModel?> getEntry(JournalId id);
-
-  /// Delete an existing journal
-  Future<JournalId> deleteEntry(JournalId id);
-}
+import 'package:my_headspace/features/journey/data/model/journal_mapper.dart';
+import 'package:my_headspace/features/journey/domain/entities/journal_entity.dart';
+import 'package:my_headspace/features/journey/domain/repositories/journal_repository.dart';
 
 class JournalRepositoryImpl implements JournalRepository {
   final LocalJournalDatasource localDS;
@@ -20,21 +11,34 @@ class JournalRepositoryImpl implements JournalRepository {
   JournalRepositoryImpl(this.localDS, this.cloudDS);
 
   @override
-  Future<JournalId> deleteEntry(JournalId id) {
-    // TODO: implement deleteEntry
-    throw UnimplementedError();
+  Future<void> deleteJournal(String id) {
+    return cloudDS.deleteEntry(id);
   }
 
   @override
-  Future<JournalModel?> getEntry(JournalId id) {
-    // TODO: implement getEntry
-    throw UnimplementedError();
+  Future<Journal?> getJournal(String id) async {
+    final model = await cloudDS.getEntry(id);
+    if (model == null) {
+      return null;
+    }
+    return JournalMapper.toEntity(model);
   }
 
   @override
-  Future<JournalId> saveEntry(JournalModel journal) {
-    // TODO: implement saveEntry
-    throw UnimplementedError();
+  Future<void> saveJournal(Journal journal) async {
+    final model = JournalMapper.fromEntity(journal);
+    await cloudDS.saveEntry(model);
+  }
+
+  @override
+  Future<List<Journal>> getAllJournals() async {
+    final models = await cloudDS.getAllEntries();
+    return models.map((model) => JournalMapper.toEntity(model)).toList();
+  }
+  
+  @override
+  Future<void> toggleFavourite(bool value, String id) {
+    return cloudDS.toggleFavourite(value, id);
   }
 }
 

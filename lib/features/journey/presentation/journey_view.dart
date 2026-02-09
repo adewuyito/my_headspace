@@ -1,10 +1,21 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_headspace/core/constants/spacing.dart';
 import 'package:my_headspace/core/constants/styles.dart';
+import 'package:my_headspace/features/journey/application/providers/journal_provider.dart';
+import 'package:my_headspace/features/journey/presentation/journey_expanded_view.dart';
 import 'package:my_headspace/features/journey/presentation/widget/journey_card.dart';
 import 'package:my_headspace/features/journey/presentation/widget/journey_date_divider.dart';
+import 'package:my_headspace/gen/colors.gen.dart';
+import 'package:my_headspace/routes/app_navigator.dart';
+import 'package:my_headspace/routes/app_route.dart';
+import 'package:my_headspace/routes/app_route.gr.dart';
+import 'package:my_headspace/service/service_locator.dart';
+import 'package:provider/provider.dart';
+
+import 'package:intl/intl.dart';
 
 @routePage
 class JourneyView extends HookWidget {
@@ -13,39 +24,140 @@ class JourneyView extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final searchTextController = useTextEditingController();
-    return Scaffold(
-      appBar: AppBar(title: Text("Journal Entries")),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: Icon(Icons.add),
-      ),
-      body: Padding(
-        padding: AppPadding.scaffoldSpacing,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              TextField(controller: searchTextController, decoration: InputDecoration(
-                prefix: Icon(Icons.search),
-                hint: Text("Search by title...", style: hpStyles.m16,)
-              ),),
-              Expanded(
-                child: ListView.separated(
-                  itemBuilder: (context, index) {
-                    return JourneyCard(heading: "", body: textPlaceholder);
-                  },
-                  separatorBuilder: (BuildContext context, int index) {
-                    return JourneyDateDivider(date: "10th Jan 2024");
-                  },
-                  itemCount: 2,
-                ),
+    final _journalProvider = useMemoized(
+      () => serviceLocator.getIt<JournalProvider>(),
+    );
+    useEffect(() {
+      _journalProvider.getAllJournals();
+
+      return null;
+    }, []);
+
+    return ChangeNotifierProvider.value(
+      value: _journalProvider,
+      child: Consumer<JournalProvider>(
+        builder: (context, provider, child) {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(
+                "Journal Entries",
+                style: hpStyles.m25.copyWith(color: ColorName.surface),
               ),
-            ],
-          ),
-        ),
+              centerTitle: false,
+              elevation: 0,
+              scrolledUnderElevation: 0,
+              surfaceTintColor: Colors.transparent,
+              backgroundColor: ColorName.background,
+              shadowColor: Colors.transparent,
+            ),
+            floatingActionButton: FloatingActionButton(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              elevation: 0,
+              onPressed: () {
+                AppNavigator.of(context).push(JournalExpandedRoute());
+              },
+              child: Icon(Icons.add),
+            ),
+            body: Padding(
+              padding: AppPadding.bodySpacing,
+              child: Column(
+                children: [
+                  TextField(
+                    controller: searchTextController,
+                    decoration: InputDecoration(
+                      prefixIcon: Padding(
+                        padding: const EdgeInsets.only(left: 19.0, right: 8.0),
+                        child: Icon(Icons.search, color: Color(0xFF98A2B3)),
+                      ),
+                      hint: Text(
+                        "Search by title...",
+                        style: hpStyles.m16.copyWith(color: Color(0xFF98A2B3)),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(color: Color(0xFF98A2B3)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(color: Color(0xFF98A2B3)),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  _journalProvider.state.journals.isEmpty
+                      ? Center(child: Text("Empty journal"))
+                      : Expanded(
+                          child: ListView.separated(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            itemCount: provider.state.journals.length * 2 - 1,
+                            itemBuilder: (context, index) {
+                              if (index.isEven) {
+                                final noteIndex =
+                                    index ~/ 2; // Get actual note index
+                                final journal =
+                                    provider.state.journals[noteIndex];
+                                final isLastItem =
+                                    index ==
+                                    (4 * 2 - 2); // Check if it's the last item
+                                return Column(
+                                  children: [
+                                    JourneyCard(
+                                      heading: journal.title,
+                                      body: journal.content,
+                                      onTap: () {
+                                        AppNavigator.of(context).push(
+                                          JournalExpandedRoute(
+                                            journal: journal,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                    if (isLastItem)
+                                      JourneyDateDivider(date: "10th Jan 2024"),
+                                  ],
+                                );
+                              }
+                              return const SizedBox.shrink();
+                            },
+                            separatorBuilder: (context, index) {
+                              final noteIndex =
+                                  index ~/ 2; // Get actual note index
+                              final journal =
+                                  provider.state.journals[noteIndex];
+                              final createdDate = journal.createdAt
+                                  .toOrdinalString();
+                              if (index.isOdd) {
+                                return JourneyDateDivider(date: createdDate);
+                              }
+                              return const SizedBox.shrink();
+                            },
+                          ),
+                        ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }
 }
 
-String textPlaceholder =
-    "Lorem ifpskd ei skdosl skde ksheks die ksheks kek skdjsjdns key skde skeks djdk ske ksue kseksjeui kdkhe.";
+extension DateTimeFormatting on DateTime {
+  String toOrdinalString() {
+    // 1. Calculate the ordinal suffix
+    String suffix = 'th';
+    final int digit = day % 10;
+    if ((digit > 0 && digit < 4) && (day < 11 || day > 13)) {
+      suffix = ['st', 'nd', 'rd'][digit - 1];
+    }
+
+    // 2. Format the rest using the intl package
+    // Result: "10th Jan 2024"
+    return "$day$suffix ${DateFormat('MMM yyyy').format(this)}";
+  }
+}

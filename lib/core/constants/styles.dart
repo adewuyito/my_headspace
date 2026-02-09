@@ -99,6 +99,12 @@ class _AppStyles {
     height: 1.5,
   );
 
+  final m24 = const TextStyle(
+    fontSize: 24,
+    fontWeight: FontWeight.w500,
+    height: 1.4,
+  );
+
   final m25 = const TextStyle(
     fontSize: 25,
     fontWeight: FontWeight.w500,
@@ -115,41 +121,49 @@ class _AppStyles {
   final sb10 = const TextStyle(
     fontSize: 10,
     height: 1.45,
+    fontWeight: FontWeight.w600,
   );
 
   final sb14 = const TextStyle(
     fontSize: 14,
     height: 1.45,
+    fontWeight: FontWeight.w600,
   );
 
   final sb15 = const TextStyle(
     fontSize: 15,
     height: 1.45,
+    fontWeight: FontWeight.w600,
   );
 
   final sb16 = const TextStyle(
     fontSize: 16,
     height: 1.45,
+    fontWeight: FontWeight.w600,
   );
 
   final sb20 = const TextStyle(
     fontSize: 20,
     height: 1.45,
+    fontWeight: FontWeight.w600,
   );
 
   final sb24 = const TextStyle(
     fontSize: 24,
     height: 1.45,
+    fontWeight: FontWeight.w600,
   );
 
   final sb22 = const TextStyle(
     fontSize: 22,
     height: 1.45,
+    fontWeight: FontWeight.w600,
   );
 
   final sb25 = const TextStyle(
     fontSize: 25,
     height: 1.45,
+    fontWeight: FontWeight.w600,
   );
 
   //  ~ Bold Style
