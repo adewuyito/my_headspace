@@ -6,18 +6,18 @@ import 'package:my_headspace/features/journey/domain/repositories/journal_reposi
 
 class JournalRepositoryImpl implements JournalRepository {
   final LocalJournalDatasource localDS;
-  final CloudJournalDatasource cloudDS;
+  final CloudJournalDatasource cloudDS; // Keep this for future use
 
   JournalRepositoryImpl(this.localDS, this.cloudDS);
 
   @override
   Future<void> deleteJournal(String id) {
-    return cloudDS.deleteEntry(id);
+    return localDS.deleteEntry(id);
   }
 
   @override
   Future<Journal?> getJournal(String id) async {
-    final model = await cloudDS.getEntry(id);
+    final model = await localDS.getEntry(id);
     if (model == null) {
       return null;
     }
@@ -27,18 +27,18 @@ class JournalRepositoryImpl implements JournalRepository {
   @override
   Future<void> saveJournal(Journal journal) async {
     final model = JournalMapper.fromEntity(journal);
-    await cloudDS.saveEntry(model);
+    await localDS.saveEntry(model);
   }
 
   @override
   Future<List<Journal>> getAllJournals() async {
-    final models = await cloudDS.getAllEntries();
+    final models = await localDS.getAllEntries();
     return models.map((model) => JournalMapper.toEntity(model)).toList();
   }
-  
+
   @override
   Future<void> toggleFavourite(bool value, String id) {
-    return cloudDS.toggleFavourite(value, id);
+    return localDS.toggleFavourite(value, id);
   }
 }
 

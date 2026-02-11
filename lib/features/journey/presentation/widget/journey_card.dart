@@ -23,26 +23,30 @@ class JourneyCard extends StatelessWidget {
       child: ListTile(
         contentPadding: EdgeInsets.fromLTRB(21.w, 17.h, 21.w, 11.h),
         onTap: onTap,
-        title: Hero(
-          tag: 'note-title-',
-          child: Material(
-            color: Colors.transparent,
-            child: Text(heading, style: hpStyles.sb20),
-          ),
-        ), // TODO: Fix tab
-        subtitle: Hero(
-          tag: 'note-content-',
-          child: Material(
-            color: Colors.transparent,
-            child: Text(
+        title:
+            // Hero(
+            // tag: 'note-title-',
+            // child: Material(
+            //   color: Colors.transparent,
+            //   child:
+            Text(heading, style: hpStyles.sb20),
+        // ),
+        // ), // TODO: Fix tab
+        subtitle:
+            // Hero(
+            //   tag: 'note-content-',
+            //   child: Material(
+            //     color: Colors.transparent,
+            // child:
+            Text(
               // _getNotePreview(index),
               body,
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
               style: hpStyles.r13.copyWith(color: ColorName.textGray7D),
             ),
-          ),
-        ),
+        // ),
+        // ),
       ),
     );
   }

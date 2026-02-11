@@ -11,6 +11,7 @@ import 'package:my_headspace/features/journey/presentation/widget/editor_options
 import 'package:my_headspace/gen/assets.gen.dart';
 import 'package:my_headspace/service/service_locator.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 
 @RoutePage()
 class JournalExpandedView extends HookWidget {
@@ -20,10 +21,12 @@ class JournalExpandedView extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final journalProvider =
-        useMemoized(() => serviceLocator.getIt<JournalProvider>());
-    final titleController =
-        useTextEditingController(text: journal?.title ?? '');
+    final journalProvider = useMemoized(
+      () => serviceLocator.getIt<JournalProvider>(),
+    );
+    final titleController = useTextEditingController(
+      text: journal?.title ?? '',
+    );
     final isFavourite = useState(journal?.isFavourite ?? false);
 
     final quillController = useMemoized(() {
@@ -38,8 +41,7 @@ class JournalExpandedView extends HookWidget {
           // Could be plain text
           return QuillController(
             document: Document()..insert(0, journal!.content),
-            selection:
-                TextSelection.collapsed(offset: journal!.content.length),
+            selection: TextSelection.collapsed(offset: journal!.content.length),
           );
         }
       }
@@ -47,18 +49,18 @@ class JournalExpandedView extends HookWidget {
     }, [journal]);
 
     void saveNote() async {
-      final deltaJson =
-          jsonEncode(quillController.document.toDelta().toJson());
+      final deltaJson = jsonEncode(quillController.document.toDelta().toJson());
       final title = titleController.text;
 
       if (title.trim().isEmpty) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('Please add a title')));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Please add a title')));
         return;
       }
 
       final newJournal = Journal(
-        id: journal?.id,
+        id: journal?.id ?? const Uuid().v4(),
         title: title,
         content: deltaJson,
         createdAt: journal?.createdAt ?? DateTime.now(),
@@ -68,8 +70,9 @@ class JournalExpandedView extends HookWidget {
       await journalProvider.saveJournal(newJournal);
 
       if (context.mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('Note saved!')));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Note saved!')));
         context.router.maybePop();
       }
     }
@@ -91,8 +94,7 @@ class JournalExpandedView extends HookWidget {
           centerTitle: true,
           title: Text(
             isNewNote ? 'New Note' : 'Edit Note',
-            style: hpStyles.m11
-                .copyWith(color: const Color.fromRGBO(38, 35, 35, .3)),
+            style: hpStyles.m11.copyWith(color: const Color(0x4D262323)),
           ),
           actions: [
             IconButton(
@@ -108,8 +110,10 @@ class JournalExpandedView extends HookWidget {
           children: [
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-              child:
-                  EditorHeadingTextfield(isNewNote, controller: titleController),
+              child: EditorHeadingTextfield(
+                isNewNote,
+                controller: titleController,
+              ),
             ),
             Assets.icons.notesDivider.svg(),
             Expanded(
@@ -117,8 +121,9 @@ class JournalExpandedView extends HookWidget {
                 padding: const EdgeInsets.all(16.0),
                 child: QuillEditor.basic(
                   controller: quillController,
-                  config:
-                      const QuillEditorConfig(placeholder: 'Write note here'),
+                  config: const QuillEditorConfig(
+                    placeholder: 'Write note here',
+                  ),
                 ),
               ),
             ),
@@ -129,4 +134,3 @@ class JournalExpandedView extends HookWidget {
     );
   }
 }
-

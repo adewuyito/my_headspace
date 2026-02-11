@@ -1,18 +1,16 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_headspace/core/constants/spacing.dart';
 import 'package:my_headspace/core/constants/styles.dart';
 import 'package:my_headspace/features/journey/application/providers/journal_provider.dart';
-import 'package:my_headspace/features/journey/presentation/journey_expanded_view.dart';
 import 'package:my_headspace/features/journey/presentation/widget/journey_card.dart';
 import 'package:my_headspace/features/journey/presentation/widget/journey_date_divider.dart';
 import 'package:my_headspace/gen/colors.gen.dart';
 import 'package:my_headspace/routes/app_navigator.dart';
-import 'package:my_headspace/routes/app_route.dart';
 import 'package:my_headspace/routes/app_route.gr.dart';
 import 'package:my_headspace/service/service_locator.dart';
+import 'package:my_headspace/core/utils/json_utils.dart';
 import 'package:provider/provider.dart';
 
 import 'package:intl/intl.dart';
@@ -64,6 +62,7 @@ class JourneyView extends HookWidget {
               padding: AppPadding.bodySpacing,
               child: Column(
                 children: [
+                  // ~ Search field
                   TextField(
                     controller: searchTextController,
                     decoration: InputDecoration(
@@ -96,18 +95,18 @@ class JourneyView extends HookWidget {
                             itemCount: provider.state.journals.length * 2 - 1,
                             itemBuilder: (context, index) {
                               if (index.isEven) {
-                                final noteIndex =
-                                    index ~/ 2; // Get actual note index
+                                final noteIndex = index ~/ 2;
                                 final journal =
                                     provider.state.journals[noteIndex];
-                                final isLastItem =
-                                    index ==
-                                    (4 * 2 - 2); // Check if it's the last item
+                                final isLastItem = index == (4 * 2 - 2);
                                 return Column(
                                   children: [
+                                    // ~ Journal Card
                                     JourneyCard(
                                       heading: journal.title,
-                                      body: journal.content,
+                                      body: extractTextFromJson(
+                                        journal.content,
+                                      ),
                                       onTap: () {
                                         AppNavigator.of(context).push(
                                           JournalExpandedRoute(
@@ -117,15 +116,19 @@ class JourneyView extends HookWidget {
                                       },
                                     ),
                                     if (isLastItem)
-                                      JourneyDateDivider(date: "10th Jan 2024"),
+                                      JourneyDateDivider(
+                                        date: journal.createdAt
+                                            .toOrdinalString(),
+                                      ),
                                   ],
                                 );
                               }
                               return const SizedBox.shrink();
                             },
+
+                            // ~ Seprator Date Time
                             separatorBuilder: (context, index) {
-                              final noteIndex =
-                                  index ~/ 2; // Get actual note index
+                              final noteIndex = index ~/ 2;
                               final journal =
                                   provider.state.journals[noteIndex];
                               final createdDate = journal.createdAt

@@ -33,20 +33,30 @@ class JournalProvider extends ChangeNotifier {
         _toggleJournalFavourite =
             toggleJournalFavourite ?? serviceLocator.getIt<ToggleJournalFavourite>();
 
+  Future<void> _internalGetAllJournals() async {
+    try {
+      final journals = await _getAllJournals();
+      _state = _state.copyWith(journals: journals);
+    } catch (e) {
+      _state = _state.copyWith(
+        errorMessage: 'An unexpected error occurred. Please try again.',
+      );
+    }
+  }
+
   Future<void> saveJournal(Journal journal) async {
     _state = _state.copyWith(isLoading: true);
     notifyListeners();
 
     try {
       await _saveJournal(journal);
-      // After saving, you might want to refresh the list of journals
-      // For now, we'll just set loading to false.
-      _state = _state.copyWith(isLoading: false);
+      await _internalGetAllJournals();
     } catch (e) {
       _state = _state.copyWith(
-        isLoading: false,
         errorMessage: 'An unexpected error occurred. Please try again.',
       );
+    } finally {
+      _state = _state.copyWith(isLoading: false);
     }
     notifyListeners();
   }
@@ -74,14 +84,13 @@ class JournalProvider extends ChangeNotifier {
 
     try {
       await _deleteJournal(id);
-      // After deleting, you might want to refresh the list of journals
-      // For now, we'll just set loading to false.p
-      _state = _state.copyWith(isLoading: false);
+      await _internalGetAllJournals();
     } catch (e) {
       _state = _state.copyWith(
-        isLoading: false,
         errorMessage: 'An unexpected error occurred. Please try again.',
       );
+    } finally {
+      _state = _state.copyWith(isLoading: false);
     }
     notifyListeners();
   }
@@ -90,15 +99,9 @@ class JournalProvider extends ChangeNotifier {
     _state = _state.copyWith(isLoading: true);
     notifyListeners();
 
-    try {
-      final journals = await _getAllJournals();
-      _state = _state.copyWith(isLoading: false, journals: journals);
-    } catch (e) {
-      _state = _state.copyWith(
-        isLoading: false,
-        errorMessage: 'An unexpected error occurred. Please try again.',
-      );
-    }
+    await _internalGetAllJournals();
+
+    _state = _state.copyWith(isLoading: false);
     notifyListeners();
   }
 

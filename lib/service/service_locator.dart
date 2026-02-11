@@ -14,6 +14,7 @@ import 'package:my_headspace/features/journey/data/datasources/cloud_journal_dat
 
 import 'package:my_headspace/features/journey/data/datasources/local_journal_datasources.dart';
 import 'package:my_headspace/features/journey/data/repositories/journal_repository.dart';
+import 'package:my_headspace/features/journey/data/local/database.dart';
 import 'package:my_headspace/features/journey/domain/repositories/journal_repository.dart'
     as domain;
 import 'package:my_headspace/routes/app_route_guard.dart';
@@ -41,6 +42,7 @@ class ServiceLocator {
     );
 
     // Journal Feature
+    _getit.registerLazySingleton<AppDatabase>(() => AppDatabase());
     _getit.registerLazySingleton<domain.JournalRepository>(() =>
         JournalRepositoryImpl(
             serviceLocator.getIt(), serviceLocator.getIt()));
@@ -48,12 +50,13 @@ class ServiceLocator {
     _getit.registerLazySingleton(() => GetJournal(serviceLocator.getIt()));
     _getit.registerLazySingleton(() => DeleteJournal(serviceLocator.getIt()));
     _getit.registerLazySingleton(() => GetAllJournals(serviceLocator.getIt()));
-    _getit.registerLazySingleton(() => ToggleJournalFavourite(serviceLocator.getIt()));
+    _getit.registerLazySingleton(
+        () => ToggleJournalFavourite(serviceLocator.getIt()));
     _getit.registerLazySingleton(() => JournalProvider());
     _getit.registerLazySingleton<CloudJournalDatasource>(
         () => CloudJournalDatasourceImpl(FirebaseFirestore.instance));
     _getit.registerLazySingleton<LocalJournalDatasource>(
-        () => LocalJournalDatasourceImpl());
+        () => LocalJournalDatasourceImpl(serviceLocator.getIt()));
   }
 }
 
