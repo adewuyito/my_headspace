@@ -10,9 +10,14 @@ abstract class Journal with _$Journal {
     required String title,
     required String content,
     required DateTime createdAt,
+    @Default(AppColors.defaultJournalColor) int color,
     @Default(false) bool isFavourite,
   }) = _Journal;
 
   factory Journal.fromJson(Map<String, dynamic> json) =>
       _$JournalFromJson(json);
+}
+
+class AppColors {
+  static const int defaultJournalColor = 0xFFFAFAFA;
 }

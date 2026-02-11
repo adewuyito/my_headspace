@@ -12,6 +12,7 @@ class Journals extends Table {
   TextColumn get id => text()();
   TextColumn get title => text()();
   TextColumn get content => text()();
+  IntColumn get color => integer().withDefault(const Constant(0xFFFAFAFA))(); 
   DateTimeColumn get createdAt => dateTime()();
   BoolColumn get isFavourite => boolean().withDefault(const Constant(false))();
 

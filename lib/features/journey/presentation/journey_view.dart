@@ -90,53 +90,31 @@ class JourneyView extends HookWidget {
                   _journalProvider.state.journals.isEmpty
                       ? Center(child: Text("Empty journal"))
                       : Expanded(
-                          child: ListView.separated(
+                          child: ListView.builder(
                             physics: const AlwaysScrollableScrollPhysics(),
-                            itemCount: provider.state.journals.length * 2 - 1,
+                            itemCount: provider.state.journals.length,
                             itemBuilder: (context, index) {
-                              if (index.isEven) {
-                                final noteIndex = index ~/ 2;
-                                final journal =
-                                    provider.state.journals[noteIndex];
-                                final isLastItem = index == (4 * 2 - 2);
-                                return Column(
-                                  children: [
-                                    // ~ Journal Card
-                                    JourneyCard(
-                                      heading: journal.title,
-                                      body: extractTextFromJson(
-                                        journal.content,
-                                      ),
-                                      onTap: () {
-                                        AppNavigator.of(context).push(
-                                          JournalExpandedRoute(
-                                            journal: journal,
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                    if (isLastItem)
-                                      JourneyDateDivider(
-                                        date: journal.createdAt
-                                            .toOrdinalString(),
-                                      ),
-                                  ],
-                                );
-                              }
-                              return const SizedBox.shrink();
-                            },
-
-                            // ~ Seprator Date Time
-                            separatorBuilder: (context, index) {
-                              final noteIndex = index ~/ 2;
-                              final journal =
-                                  provider.state.journals[noteIndex];
-                              final createdDate = journal.createdAt
-                                  .toOrdinalString();
-                              if (index.isOdd) {
-                                return JourneyDateDivider(date: createdDate);
-                              }
-                              return const SizedBox.shrink();
+                              final journal = provider.state.journals[index];
+                              Color cardColor = Color(journal.color);
+                              return Column(
+                                children: [
+                                  // ~ Journal Card
+                                  JourneyCard(
+                                    color: cardColor,
+                                    id: journal.id!,
+                                    heading: journal.title,
+                                    body: extractTextFromJson(journal.content),
+                                    onTap: () {
+                                      AppNavigator.of(context).push(
+                                        JournalExpandedRoute(journal: journal),
+                                      );
+                                    },
+                                  ),
+                                  JourneyDateDivider(
+                                    date: journal.createdAt.toOrdinalString(),
+                                  ),
+                                ],
+                              );
                             },
                           ),
                         ),

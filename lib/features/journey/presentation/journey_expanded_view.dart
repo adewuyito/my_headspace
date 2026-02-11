@@ -48,6 +48,17 @@ class JournalExpandedView extends HookWidget {
       return QuillController.basic();
     }, [journal]);
 
+    final Color noteColor = useMemoized(() {
+      return Color(journal?.color ?? AppColors.defaultJournalColor);
+    }, [journal?.color]);
+
+    final selectedColor = useState<Color>(noteColor);
+
+    useEffect(() {
+      selectedColor.value = noteColor;
+      return null;
+    }, [noteColor]);
+
     void saveNote() async {
       final deltaJson = jsonEncode(quillController.document.toDelta().toJson());
       final title = titleController.text;
@@ -65,6 +76,7 @@ class JournalExpandedView extends HookWidget {
         content: deltaJson,
         createdAt: journal?.createdAt ?? DateTime.now(),
         isFavourite: isFavourite.value,
+        color: selectedColor.value.value,
       );
 
       await journalProvider.saveJournal(newJournal);
@@ -90,6 +102,7 @@ class JournalExpandedView extends HookWidget {
     return ChangeNotifierProvider.value(
       value: journalProvider,
       child: Scaffold(
+        backgroundColor: selectedColor.value,
         appBar: AppBar(
           centerTitle: true,
           title: Text(
@@ -111,6 +124,9 @@ class JournalExpandedView extends HookWidget {
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
               child: EditorHeadingTextfield(
+                // ~ Fix the hero animation
+                tag: '',
+                // tag: 'note-title-${journal!.id}',
                 isNewNote,
                 controller: titleController,
               ),
@@ -127,7 +143,12 @@ class JournalExpandedView extends HookWidget {
                 ),
               ),
             ),
-            EditorToolbar(controller: quillController),
+            EditorToolbar(
+              controller: quillController,
+              onColorChanged: (color) {
+                selectedColor.value = color;
+              },
+            ),
           ],
         ),
       ),

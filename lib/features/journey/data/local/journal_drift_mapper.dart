@@ -9,6 +9,7 @@ class JournalDriftMapper {
       content: model.content,
       createdAt: model.createdAt,
       isFavourite: model.isFavourite,
+      color: model.color,
     );
   }
 
@@ -19,6 +20,7 @@ class JournalDriftMapper {
       content: entry.content,
       createdAt: entry.createdAt,
       isFavourite: entry.isFavourite,
+      color: entry.color,
     );
   }
 }

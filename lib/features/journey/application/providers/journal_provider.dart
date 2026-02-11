@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:path/path.dart' as p;
 import 'package:flutter/foundation.dart';
 import 'package:my_headspace/features/journey/application/usecases/delete_journal.dart';
 import 'package:my_headspace/features/journey/application/usecases/get_all_journals.dart';
@@ -6,6 +8,7 @@ import 'package:my_headspace/features/journey/application/usecases/save_journal.
 import 'package:my_headspace/features/journey/application/usecases/toggle_journal_favourite.dart';
 import 'package:my_headspace/features/journey/domain/entities/journal_entity.dart';
 import 'package:my_headspace/service/service_locator.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'journal_state.dart';
 
@@ -25,13 +28,14 @@ class JournalProvider extends ChangeNotifier {
     DeleteJournal? deleteJournal,
     GetAllJournals? getAllJournals,
     ToggleJournalFavourite? toggleJournalFavourite,
-  })  : _saveJournal = saveJournal ?? serviceLocator.getIt<SaveJournal>(),
-        _getJournal = getJournal ?? serviceLocator.getIt<GetJournal>(),
-        _deleteJournal = deleteJournal ?? serviceLocator.getIt<DeleteJournal>(),
-        _getAllJournals =
-            getAllJournals ?? serviceLocator.getIt<GetAllJournals>(),
-        _toggleJournalFavourite =
-            toggleJournalFavourite ?? serviceLocator.getIt<ToggleJournalFavourite>();
+  }) : _saveJournal = saveJournal ?? serviceLocator.getIt<SaveJournal>(),
+       _getJournal = getJournal ?? serviceLocator.getIt<GetJournal>(),
+       _deleteJournal = deleteJournal ?? serviceLocator.getIt<DeleteJournal>(),
+       _getAllJournals =
+           getAllJournals ?? serviceLocator.getIt<GetAllJournals>(),
+       _toggleJournalFavourite =
+           toggleJournalFavourite ??
+           serviceLocator.getIt<ToggleJournalFavourite>();
 
   Future<void> _internalGetAllJournals() async {
     try {
@@ -126,6 +130,17 @@ class JournalProvider extends ChangeNotifier {
             'An unexpected error occurred while updating favourite status. Please try again.',
       );
       notifyListeners();
+    }
+  }
+
+  // ! Development, Delete database
+  Future<void> deleteDatabaseFile() async {
+    final dbFolder = await getApplicationDocumentsDirectory();
+    final file = File(p.join(dbFolder.path, 'db.sqlite'));
+
+    if (await file.exists()) {
+      await file.delete();
+      print('Database deleted');
     }
   }
 }
