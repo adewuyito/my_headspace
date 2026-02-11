@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_quill/flutter_quill.dart';
+import 'package:my_headspace/core/constants/note_colors.dart';
 import 'dart:convert';
 import 'package:my_headspace/core/constants/styles.dart';
 import 'package:my_headspace/features/journey/application/providers/journal_provider.dart';
@@ -49,7 +50,7 @@ class JournalExpandedView extends HookWidget {
     }, [journal]);
 
     final Color noteColor = useMemoized(() {
-      return Color(journal?.color ?? AppColors.defaultJournalColor);
+      return Color(journal?.color ?? NoteColors.defaultJournalColor);
     }, [journal?.color]);
 
     final selectedColor = useState<Color>(noteColor);
@@ -76,17 +77,18 @@ class JournalExpandedView extends HookWidget {
         content: deltaJson,
         createdAt: journal?.createdAt ?? DateTime.now(),
         isFavourite: isFavourite.value,
-        color: selectedColor.value.value,
+        color: selectedColor.value.toARGB32(),
       );
 
       await journalProvider.saveJournal(newJournal);
 
-      if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Note saved!')));
-        context.router.maybePop();
-      }
+      // TODO: Update to show error on note not saved
+      // if (context.mounted) {
+      //   ScaffoldMessenger.of(
+      //     context,
+      //   ).showSnackBar(const SnackBar(content: Text('Note saved!')));
+      //   context.router.maybePop();
+      // }
     }
 
     void favouriteNote() {
@@ -104,6 +106,14 @@ class JournalExpandedView extends HookWidget {
       child: Scaffold(
         backgroundColor: selectedColor.value,
         appBar: AppBar(
+          leading: IconButton(
+            onPressed: () {
+              saveNote();
+
+              context.pop();
+            },
+            icon: Icon(Icons.arrow_back_ios_new_rounded),
+          ),
           centerTitle: true,
           title: Text(
             isNewNote ? 'New Note' : 'Edit Note',
@@ -148,6 +158,7 @@ class JournalExpandedView extends HookWidget {
               onColorChanged: (color) {
                 selectedColor.value = color;
               },
+              activeColor: selectedColor.value,
             ),
           ],
         ),

@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:my_headspace/core/constants/note_colors.dart';
 
 part 'journal_entity.freezed.dart';
 part 'journal_entity.g.dart';
@@ -10,7 +11,7 @@ abstract class Journal with _$Journal {
     required String title,
     required String content,
     required DateTime createdAt,
-    @Default(AppColors.defaultJournalColor) int color,
+    @Default(NoteColors.defaultJournalColor) int color,
     @Default(false) bool isFavourite,
   }) = _Journal;
 
@@ -18,6 +19,4 @@ abstract class Journal with _$Journal {
       _$JournalFromJson(json);
 }
 
-class AppColors {
-  static const int defaultJournalColor = 0xFFFAFAFA;
-}
+

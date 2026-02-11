@@ -16,7 +16,7 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final journal = serviceLocator.getIt<JournalProvider>();
+    final journal = serviceLocator.getIt<JournalProvider>(); // TODO: Remove the implimentations
     return Scaffold(
       body: Padding(
         padding: AppPadding.scaffoldSpacing,

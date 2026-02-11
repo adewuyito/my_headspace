@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:my_headspace/core/constants/note_colors.dart';
 
 class EditorToolbar extends StatelessWidget {
   final QuillController controller;
   final ValueChanged<Color>? onColorChanged;
+  final Color? activeColor;
   const EditorToolbar({
     super.key,
     required this.controller,
     this.onColorChanged,
+    this.activeColor,
   });
 
   @override
@@ -48,18 +51,7 @@ class EditorToolbar extends StatelessWidget {
               showModalBottomSheet(
                 context: context,
                 builder: (BuildContext bc) {
-                  final List<Color> colors = [
-                    Color(0xFFFAFAFA), // ~ White
-                    Color(0xFFFEF1CF),
-                    Color(0xFFDBEFF2),
-                    Color(0xFFBFD4FB),
-                    Color(0xFFFFADAD),
-                    Color(0xFFFCA1F6),
-                    Color(0xFFBEE9C2),
-                    Color(0xFFCDCDCD),
-                    Color(0xFFD0BDFF),
-                    Color(0xFFFF6600),
-                  ];
+                  final List<Color> colors = NoteColors.colorsList;
                   return Container(
                     height: 200.h,
                     child: GridView.builder(
@@ -70,6 +62,7 @@ class EditorToolbar extends StatelessWidget {
                       itemCount: colors.length,
                       itemBuilder: (BuildContext context, int index) {
                         final color = colors[index];
+                        final isSelected = activeColor == color;
                         return GestureDetector(
                           onTap: () {
                             if (onColorChanged != null) {
@@ -82,9 +75,17 @@ class EditorToolbar extends StatelessWidget {
                             height: 56,
                             margin: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
-                              color: color,
+                              color: isSelected == true
+                                  ? Colors.transparent
+                                  : color,
+                              border: isSelected == true
+                                  ? BoxBorder.all(color: color, width: 2)
+                                  : null,
                               shape: BoxShape.circle,
                             ),
+                            child: isSelected == true
+                                ? Icon(Icons.check, color: color)
+                                : null,
                           ),
                         );
                       },
