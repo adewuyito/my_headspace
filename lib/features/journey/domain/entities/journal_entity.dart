@@ -13,10 +13,9 @@ abstract class Journal with _$Journal {
     required DateTime createdAt,
     @Default(NoteColors.defaultJournalColor) int color,
     @Default(false) bool isFavourite,
+    @Default(false) bool isBackedUp,
   }) = _Journal;
 
   factory Journal.fromJson(Map<String, dynamic> json) =>
       _$JournalFromJson(json);
 }
-
-

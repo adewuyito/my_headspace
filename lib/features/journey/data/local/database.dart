@@ -15,6 +15,7 @@ class Journals extends Table {
   IntColumn get color => integer().withDefault(const Constant(0xFFFAFAFA))(); 
   DateTimeColumn get createdAt => dateTime()();
   BoolColumn get isFavourite => boolean().withDefault(const Constant(false))();
+  BoolColumn get isBackedUp => boolean().withDefault(const Constant(false))();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -25,7 +26,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 }
 
 LazyDatabase _openConnection() {

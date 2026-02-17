@@ -4,7 +4,6 @@ import 'package:my_headspace/core/utils/auth_exceptions.dart';
 import 'package:my_headspace/features/auth/application/enums/auth_results.dart';
 import 'package:my_headspace/features/auth/application/providers/create_account_provider.dart';
 import 'package:my_headspace/features/auth/domain/repository/auth_repository.dart';
-import 'package:my_headspace/service/service_locator.dart';
 
 class AuthProvider extends ChangeNotifier {
   AuthState _authState = AuthState.unknown();
@@ -22,13 +21,12 @@ class AuthProvider extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
 
   AuthProvider({
-    AuthRepository? authRepo,
-    CreateAccountProvider? userDataProvider,
-    FirebaseAuth? firebaseAuth,
-  }) : _authRepo = authRepo ?? AuthRepository(),
-       _userData =
-           userDataProvider ?? serviceLocator.getIt<CreateAccountProvider>(),
-       _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance {
+    required AuthRepository authRepo,
+    required CreateAccountProvider userDataProvider,
+    required FirebaseAuth firebaseAuth,
+  }) : _authRepo = authRepo,
+       _userData = userDataProvider,
+       _firebaseAuth = firebaseAuth {
     _firebaseAuth.authStateChanges().listen(onAuthStateChanged);
   }
 

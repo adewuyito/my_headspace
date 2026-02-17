@@ -1,4 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' as firebase_firestore;
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:get_it/get_it.dart';
 import 'package:my_headspace/features/auth/application/providers/auth_provider.dart';
 import 'package:my_headspace/features/auth/application/providers/create_account_provider.dart';
@@ -27,38 +28,76 @@ class ServiceLocator {
   void configure() {
     // _getit.registerSingleton<My_Provider>(My_Provider());
 
-    _getit.registerLazySingleton<CreateAccountProvider>(
-        () => CreateAccountProvider());
+    // ~ Firebase singlton instances
+    _getit.registerLazySingleton<firebase_firestore.FirebaseFirestore>(
+      () => firebase_firestore.FirebaseFirestore.instance,
+    );
+    _getit.registerLazySingleton<firebase_auth.FirebaseAuth>(
+      () => firebase_auth.FirebaseAuth.instance,
+    );
 
+    // ~ Auth Ripositories
     _getit.registerSingleton<AuthGuard>(AuthGuard());
 
-    // ~ Ripositories
+    _getit.registerLazySingleton<CreateAccountProvider>(
+      () => CreateAccountProvider(),
+    );
+
     _getit.registerLazySingleton<AuthRepository>(() => AuthRepository());
 
-    _getit.registerSingleton<AuthProvider>(AuthProvider());
+    _getit.registerLazySingleton<AuthProvider>(
+      () => AuthProvider(
+        authRepo: _getit<AuthRepository>(),
+        userDataProvider: _getit<CreateAccountProvider>(),
+        firebaseAuth: _getit<firebase_auth.FirebaseAuth>(),
+      ),
+    );
 
+    // ~ Other providers
     _getit.registerLazySingleton<PersonalisationProvider>(
       () => PersonalisationProvider(),
     );
 
-    // Journal Feature
+    // ~ Journal Feature
     _getit.registerLazySingleton<AppDatabase>(() => AppDatabase());
-    _getit.registerLazySingleton<domain.JournalRepository>(() =>
-        JournalRepositoryImpl(
-            serviceLocator.getIt(), serviceLocator.getIt()));
-    _getit.registerLazySingleton(() => SaveJournal(serviceLocator.getIt()));
-    _getit.registerLazySingleton(() => GetJournal(serviceLocator.getIt()));
-    _getit.registerLazySingleton(() => DeleteJournal(serviceLocator.getIt()));
-    _getit.registerLazySingleton(() => GetAllJournals(serviceLocator.getIt()));
-    _getit.registerLazySingleton(
-        () => ToggleJournalFavourite(serviceLocator.getIt()));
+
     _getit.registerLazySingleton(() => JournalProvider());
+
+    _getit.registerLazySingleton<domain.JournalRepository>(
+      () => JournalRepositoryImpl(
+        _getit<LocalJournalDatasource>(),
+        _getit<CloudJournalDatasource>(),
+      ),
+    );
+
+    // ~ Domain Usecases
+    _getit.registerLazySingleton(
+      () => SaveJournal(_getit<domain.JournalRepository>()),
+    );
+    _getit.registerLazySingleton(
+      () => GetJournal(_getit<domain.JournalRepository>()),
+    );
+    _getit.registerLazySingleton(
+      () => DeleteJournal(_getit<domain.JournalRepository>()),
+    );
+    _getit.registerLazySingleton(
+      () => GetAllJournals(_getit<domain.JournalRepository>()),
+    );
+    _getit.registerLazySingleton(
+      () => ToggleJournalFavourite(_getit<domain.JournalRepository>()),
+    );
+
+    // ~ Database Repositories
     _getit.registerLazySingleton<CloudJournalDatasource>(
-        () => CloudJournalDatasourceImpl(FirebaseFirestore.instance));
+      () => CloudJournalDatasourceImpl(
+        _getit<firebase_firestore.FirebaseFirestore>(),
+        _getit<firebase_auth.FirebaseAuth>(),
+      ),
+    );
     _getit.registerLazySingleton<LocalJournalDatasource>(
-        () => LocalJournalDatasourceImpl(serviceLocator.getIt()));
+      () => LocalJournalDatasourceImpl(_getit<AppDatabase>()),
+    );
   }
 }
 
 final serviceLocator = ServiceLocator();
-

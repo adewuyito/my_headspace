@@ -7,6 +7,6 @@ class MakeFavourite {
   MakeFavourite(this.repository);
 
   Future<void> call(Journal journal) {
-    return repository.saveJournal(journal);
+    return repository.saveJournal(journal, backupToCloud: false);
   }
 }

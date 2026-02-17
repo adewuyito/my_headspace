@@ -10,6 +10,7 @@ class JournalMapper {
       createdAt: model.createdAt,
       isFavourite: model.isFavourite,
       color: model.color,
+      isBackedUp: model.isBackedUp,
     );
   }
 
@@ -21,6 +22,7 @@ class JournalMapper {
       createdAt: entity.createdAt,
       isFavourite: entity.isFavourite,
       color: entity.color,
+      isBackedUp: entity.isBackedUp,
     );
   }
 }

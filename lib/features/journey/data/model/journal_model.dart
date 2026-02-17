@@ -9,6 +9,7 @@ class JournalModel {
   final DateTime createdAt;
   final bool isFavourite;
   final int color;
+  final bool isBackedUp;
 
   JournalModel({
     this.id,
@@ -17,6 +18,7 @@ class JournalModel {
     required this.createdAt,
     this.isFavourite = false,
     required this.color,
+    this.isBackedUp = false,
   });
 
   factory JournalModel.fromSnapshot(DocumentSnapshot doc) {
@@ -28,6 +30,7 @@ class JournalModel {
       createdAt: (data['createdAt'] as Timestamp).toDate(),
       isFavourite: data['isFavourite'] as bool? ?? false,
       color: data['color'] as int,
+      isBackedUp: data['isBackedUp'] as bool? ?? false,
     );
   }
 
@@ -38,6 +41,7 @@ class JournalModel {
       'createdAt': Timestamp.fromDate(createdAt),
       'isFavourite': isFavourite,
       'color': color,
+      'isBackedUp': isBackedUp,
     };
   }
 }

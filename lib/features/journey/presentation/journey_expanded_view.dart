@@ -60,7 +60,10 @@ class JournalExpandedView extends HookWidget {
       return null;
     }, [noteColor]);
 
-    void saveNote() async {
+    void saveNote({
+      bool showSnackbar = false,
+      bool backupToCloud = false,
+    }) async {
       final deltaJson = jsonEncode(quillController.document.toDelta().toJson());
       final title = titleController.text;
 
@@ -80,15 +83,17 @@ class JournalExpandedView extends HookWidget {
         color: selectedColor.value.toARGB32(),
       );
 
-      await journalProvider.saveJournal(newJournal);
+      // By default, saves are local. A mechanism to save to the cloud should be added.
+      await journalProvider.saveJournal(
+        newJournal,
+        backupToCloud: backupToCloud,
+      );
 
-      // TODO: Update to show error on note not saved
-      // if (context.mounted) {
-      //   ScaffoldMessenger.of(
-      //     context,
-      //   ).showSnackBar(const SnackBar(content: Text('Note saved!')));
-      //   context.router.maybePop();
-      // }
+      if (showSnackbar && context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Note saved!')));
+      }
     }
 
     void favouriteNote() {
@@ -109,10 +114,9 @@ class JournalExpandedView extends HookWidget {
           leading: IconButton(
             onPressed: () {
               saveNote();
-
-              context.pop();
+              context.router.maybePop();
             },
-            icon: Icon(Icons.arrow_back_ios_new_rounded),
+            icon: const Icon(Icons.arrow_back_ios_new_rounded),
           ),
           centerTitle: true,
           title: Text(
@@ -126,7 +130,10 @@ class JournalExpandedView extends HookWidget {
               ),
               onPressed: favouriteNote,
             ),
-            IconButton(icon: const Icon(Icons.more_vert), onPressed: saveNote),
+            IconButton(
+              icon: const Icon(Icons.more_vert),
+              onPressed: () => saveNote(showSnackbar: true),
+            ),
           ],
         ),
         body: Column(

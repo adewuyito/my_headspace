@@ -6,7 +6,7 @@ import 'package:my_headspace/features/journey/domain/repositories/journal_reposi
 
 class JournalRepositoryImpl implements JournalRepository {
   final LocalJournalDatasource localDS;
-  final CloudJournalDatasource cloudDS; // Keep this for future use
+  final CloudJournalDatasource cloudDS;
 
   JournalRepositoryImpl(this.localDS, this.cloudDS);
 
@@ -25,9 +25,16 @@ class JournalRepositoryImpl implements JournalRepository {
   }
 
   @override
-  Future<void> saveJournal(Journal journal) async {
-    final model = JournalMapper.fromEntity(journal);
-    await localDS.saveEntry(model);
+  Future<void> saveJournal(Journal journal, {bool backupToCloud = false}) async {
+    if (backupToCloud) {
+      final backedUpJournal = journal.copyWith(isBackedUp: true);
+      final model = JournalMapper.fromEntity(backedUpJournal);
+      await cloudDS.saveEntry(model);
+      await localDS.saveEntry(model);
+    } else {
+      final model = JournalMapper.fromEntity(journal.copyWith(isBackedUp: false));
+      await localDS.saveEntry(model);
+    }
   }
 
   @override

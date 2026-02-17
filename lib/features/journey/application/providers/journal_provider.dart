@@ -48,12 +48,15 @@ class JournalProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> saveJournal(Journal journal) async {
+  Future<void> saveJournal(
+    Journal journal, {
+    bool backupToCloud = false,
+  }) async {
     _state = _state.copyWith(isLoading: true);
     notifyListeners();
 
     try {
-      await _saveJournal(journal);
+      await _saveJournal(journal, backupToCloud: backupToCloud);
       await _internalGetAllJournals();
     } catch (e) {
       _state = _state.copyWith(

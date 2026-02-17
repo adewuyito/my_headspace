@@ -6,7 +6,7 @@ class SaveJournal {
 
   SaveJournal(this.repository);
 
-  Future<void> call(Journal journal) {
-    return repository.saveJournal(journal);
+  Future<void> call(Journal journal, {bool backupToCloud = false}) {
+    return repository.saveJournal(journal, backupToCloud: backupToCloud);
   }
 }
