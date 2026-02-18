@@ -54,6 +54,7 @@ dependencies:
 
   # Database viewer
   drift_db_viewer: ^2.1.0
+  connectivity_plus: ^7.0.0
   
 
   

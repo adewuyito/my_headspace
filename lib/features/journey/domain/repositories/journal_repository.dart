@@ -6,4 +6,6 @@ abstract class JournalRepository {
   Future<void> deleteJournal(String id);
   Future<List<Journal>> getAllJournals();
   Future<void> toggleFavourite(bool value, String id);
+  Future<void> syncPendingData();
+  void startConnectivityListener();
 }

@@ -8,7 +8,9 @@ abstract interface class LocalJournalDatasource {
   Future<JournalModel?> getEntry(JournalId id);
   Future<void> deleteEntry(JournalId id);
   Future<void> toggleFavourite(bool value, String id);
+  Future<void> markAsBackedUp(JournalId id);
   Future<List<JournalModel>> getAllEntries();
+  Future<List<JournalModel>> getUnsyncedEntry();
 }
 
 class LocalJournalDatasourceImpl implements LocalJournalDatasource {
@@ -47,8 +49,22 @@ class LocalJournalDatasourceImpl implements LocalJournalDatasource {
   }
 
   @override
+  Future<void> markAsBackedUp(JournalId id) {
+    return (database.update(database.journals)..where((j) => j.id.equals(id)))
+        .write(const JournalsCompanion(isBackedUp: Value(true)));
+  }
+
+  @override
   Future<List<JournalModel>> getAllEntries() async {
     final journals = await database.select(database.journals).get();
+    return journals.map(JournalDriftMapper.fromDrift).toList();
+  }
+
+  @override
+  Future<List<JournalModel>> getUnsyncedEntry() async {
+    final journals = await (database.select(database.journals)
+          ..where((j) => j.isBackedUp.equals(false)))
+        .get();
     return journals.map(JournalDriftMapper.fromDrift).toList();
   }
 }

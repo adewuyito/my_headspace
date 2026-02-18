@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_quill/flutter_quill.dart';
@@ -25,6 +26,9 @@ class JournalExpandedView extends HookWidget {
     final journalProvider = useMemoized(
       () => serviceLocator.getIt<JournalProvider>(),
     );
+    // final auth = useMemoized(
+    //   () => serviceLocator.getIt<firebase_auth.FirebaseAuth>(),
+    // );
     final titleController = useTextEditingController(
       text: journal?.title ?? '',
     );
@@ -60,7 +64,7 @@ class JournalExpandedView extends HookWidget {
       return null;
     }, [noteColor]);
 
-    void saveNote({
+    Future<bool> saveNote({
       bool showSnackbar = false,
       bool backupToCloud = false,
     }) async {
@@ -71,7 +75,7 @@ class JournalExpandedView extends HookWidget {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(const SnackBar(content: Text('Please add a title')));
-        return;
+        return false;
       }
 
       final newJournal = Journal(
@@ -83,17 +87,22 @@ class JournalExpandedView extends HookWidget {
         color: selectedColor.value.toARGB32(),
       );
 
-      // By default, saves are local. A mechanism to save to the cloud should be added.
-      await journalProvider.saveJournal(
+      final saved = await journalProvider.saveJournal(
         newJournal,
         backupToCloud: backupToCloud,
       );
 
-      if (showSnackbar && context.mounted) {
+      if (showSnackbar && context.mounted && saved) {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(const SnackBar(content: Text('Note saved!')));
       }
+      if (context.mounted && !saved) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Unable to save note. Please try again.')),
+        );
+      }
+      return saved;
     }
 
     void favouriteNote() {
@@ -112,9 +121,13 @@ class JournalExpandedView extends HookWidget {
         backgroundColor: selectedColor.value,
         appBar: AppBar(
           leading: IconButton(
-            onPressed: () {
-              saveNote();
-              context.router.maybePop();
+            onPressed: () async {
+              final wasSaved = await saveNote(
+                // backupToCloud: auth.currentUser != null,
+              );
+              if (wasSaved && context.mounted) {
+                context.router.maybePop();
+              }
             },
             icon: const Icon(Icons.arrow_back_ios_new_rounded),
           ),
@@ -132,7 +145,12 @@ class JournalExpandedView extends HookWidget {
             ),
             IconButton(
               icon: const Icon(Icons.more_vert),
-              onPressed: () => saveNote(showSnackbar: true),
+              onPressed: () async {
+                await saveNote(
+                  showSnackbar: true,
+                  // backupToCloud: auth.currentUser != null,
+                );
+              },
             ),
           ],
         ),

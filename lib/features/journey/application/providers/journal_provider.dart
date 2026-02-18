@@ -7,6 +7,8 @@ import 'package:my_headspace/features/journey/application/usecases/get_journal.d
 import 'package:my_headspace/features/journey/application/usecases/save_journal.dart';
 import 'package:my_headspace/features/journey/application/usecases/toggle_journal_favourite.dart';
 import 'package:my_headspace/features/journey/domain/entities/journal_entity.dart';
+import 'package:my_headspace/features/journey/domain/repositories/journal_repository.dart'
+    as domain;
 import 'package:my_headspace/service/service_locator.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -19,6 +21,7 @@ class JournalProvider extends ChangeNotifier {
   final DeleteJournal _deleteJournal;
   final GetAllJournals _getAllJournals;
   final ToggleJournalFavourite _toggleJournalFavourite;
+  final domain.JournalRepository _journalRepository;
 
   JournalState get state => _state;
 
@@ -28,6 +31,7 @@ class JournalProvider extends ChangeNotifier {
     DeleteJournal? deleteJournal,
     GetAllJournals? getAllJournals,
     ToggleJournalFavourite? toggleJournalFavourite,
+    domain.JournalRepository? journalRepository,
   }) : _saveJournal = saveJournal ?? serviceLocator.getIt<SaveJournal>(),
        _getJournal = getJournal ?? serviceLocator.getIt<GetJournal>(),
        _deleteJournal = deleteJournal ?? serviceLocator.getIt<DeleteJournal>(),
@@ -35,7 +39,10 @@ class JournalProvider extends ChangeNotifier {
            getAllJournals ?? serviceLocator.getIt<GetAllJournals>(),
        _toggleJournalFavourite =
            toggleJournalFavourite ??
-           serviceLocator.getIt<ToggleJournalFavourite>();
+           serviceLocator.getIt<ToggleJournalFavourite>(),
+       _journalRepository =
+           journalRepository ??
+           serviceLocator.getIt<domain.JournalRepository>();
 
   Future<void> _internalGetAllJournals() async {
     try {
@@ -48,24 +55,26 @@ class JournalProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> saveJournal(
+  Future<bool> saveJournal(
     Journal journal, {
     bool backupToCloud = false,
   }) async {
-    _state = _state.copyWith(isLoading: true);
+    _state = _state.copyWith(isLoading: true, errorMessage: null);
     notifyListeners();
 
     try {
       await _saveJournal(journal, backupToCloud: backupToCloud);
       await _internalGetAllJournals();
+      return true;
     } catch (e) {
       _state = _state.copyWith(
         errorMessage: 'An unexpected error occurred. Please try again.',
       );
+      return false;
     } finally {
       _state = _state.copyWith(isLoading: false);
+      notifyListeners();
     }
-    notifyListeners();
   }
 
   Future<void> getJournal(String id) async {
@@ -133,6 +142,24 @@ class JournalProvider extends ChangeNotifier {
             'An unexpected error occurred while updating favourite status. Please try again.',
       );
       notifyListeners();
+    }
+  }
+
+  Future<void> syncPendingData() async {
+    try {
+      await _journalRepository.syncPendingData();
+      await _internalGetAllJournals();
+      notifyListeners();
+    } catch (_) {
+      // Keep sync silent to avoid blocking or interrupting app flow.
+    }
+  }
+
+  void startConnectivitySyncListener() {
+    try {
+      _journalRepository.startConnectivityListener();
+    } catch (_) {
+      // Ignore plugin bootstrap issues during reload; sync can still run manually.
     }
   }
 
