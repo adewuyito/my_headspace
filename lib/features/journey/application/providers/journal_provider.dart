@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:my_headspace/core/constants/exceptions.dart';
 import 'package:path/path.dart' as p;
 import 'package:flutter/foundation.dart';
 import 'package:my_headspace/features/journey/application/usecases/delete_journal.dart';
@@ -44,17 +45,19 @@ class JournalProvider extends ChangeNotifier {
            journalRepository ??
            serviceLocator.getIt<domain.JournalRepository>();
 
+  /// Refreshes journal state.
   Future<void> _internalGetAllJournals() async {
     try {
       final journals = await _getAllJournals();
       _state = _state.copyWith(journals: journals);
     } catch (e) {
       _state = _state.copyWith(
-        errorMessage: 'An unexpected error occurred. Please try again.',
+        errorMessage: ErrorStrings.unexpectedGeneralError,
       );
     }
   }
 
+  /// Saves a journal to storage
   Future<bool> saveJournal(
     Journal journal, {
     bool backupToCloud = false,
@@ -68,7 +71,7 @@ class JournalProvider extends ChangeNotifier {
       return true;
     } catch (e) {
       _state = _state.copyWith(
-        errorMessage: 'An unexpected error occurred. Please try again.',
+        errorMessage: ErrorStrings.unexpectedGeneralError,
       );
       return false;
     } finally {
@@ -78,6 +81,7 @@ class JournalProvider extends ChangeNotifier {
   }
 
   Future<void> getJournal(String id) async {
+    // TODO: Implement use case.
     _state = _state.copyWith(isLoading: true);
     notifyListeners();
 
@@ -88,7 +92,7 @@ class JournalProvider extends ChangeNotifier {
     } catch (e) {
       _state = _state.copyWith(
         isLoading: false,
-        errorMessage: 'An unexpected error occurred. Please try again.',
+        errorMessage: ErrorStrings.unexpectedGeneralError,
       );
     }
     notifyListeners();
@@ -103,7 +107,7 @@ class JournalProvider extends ChangeNotifier {
       await _internalGetAllJournals();
     } catch (e) {
       _state = _state.copyWith(
-        errorMessage: 'An unexpected error occurred. Please try again.',
+        errorMessage: ErrorStrings.unexpectedGeneralError,
       );
     } finally {
       _state = _state.copyWith(isLoading: false);
@@ -138,8 +142,7 @@ class JournalProvider extends ChangeNotifier {
     } catch (e) {
       // Handle error if needed
       _state = _state.copyWith(
-        errorMessage:
-            'An unexpected error occurred while updating favourite status. Please try again.',
+        errorMessage: ErrorStrings.unexpectedFavouriteError,
       );
       notifyListeners();
     }
@@ -150,17 +153,13 @@ class JournalProvider extends ChangeNotifier {
       await _journalRepository.syncPendingData();
       await _internalGetAllJournals();
       notifyListeners();
-    } catch (_) {
-      // Keep sync silent to avoid blocking or interrupting app flow.
-    }
+    } catch (_) {}
   }
 
   void startConnectivitySyncListener() {
     try {
       _journalRepository.startConnectivityListener();
-    } catch (_) {
-      // Ignore plugin bootstrap issues during reload; sync can still run manually.
-    }
+    } catch (_) {}
   }
 
   // ! Development, Delete database
@@ -170,7 +169,7 @@ class JournalProvider extends ChangeNotifier {
 
     if (await file.exists()) {
       await file.delete();
-      print('Database deleted');
+      debugPrint('Database deleted');
     }
   }
 }

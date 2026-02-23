@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_quill/flutter_quill.dart';
@@ -26,9 +25,6 @@ class JournalExpandedView extends HookWidget {
     final journalProvider = useMemoized(
       () => serviceLocator.getIt<JournalProvider>(),
     );
-    // final auth = useMemoized(
-    //   () => serviceLocator.getIt<firebase_auth.FirebaseAuth>(),
-    // );
     final titleController = useTextEditingController(
       text: journal?.title ?? '',
     );
@@ -123,7 +119,6 @@ class JournalExpandedView extends HookWidget {
           leading: IconButton(
             onPressed: () async {
               final wasSaved = await saveNote(
-                // backupToCloud: auth.currentUser != null,
               );
               if (wasSaved && context.mounted) {
                 context.router.maybePop();
@@ -148,7 +143,6 @@ class JournalExpandedView extends HookWidget {
               onPressed: () async {
                 await saveNote(
                   showSnackbar: true,
-                  // backupToCloud: auth.currentUser != null,
                 );
               },
             ),

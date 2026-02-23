@@ -1,5 +1,3 @@
-import 'package:my_headspace/features/journey/presentation/journey_expanded_view.dart';
-
 import 'app_route_guard.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
