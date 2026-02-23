@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -48,10 +49,26 @@ class JournalExpandedView extends HookWidget {
       }
       return QuillController.basic();
     }, [journal]);
+    useEffect(() {
+      return quillController.dispose;
+    }, [quillController]);
+    final initialTitle = useMemoized(() => journal?.title ?? '', [journal?.id]);
+    final initialContent = useMemoized(
+      () => jsonEncode(quillController.document.toDelta().toJson()),
+      [quillController],
+    );
+    final initialFavourite = useMemoized(
+      () => journal?.isFavourite ?? false,
+      [journal?.id, journal?.isFavourite],
+    );
 
     final Color noteColor = useMemoized(() {
       return Color(journal?.color ?? NoteColors.defaultJournalColor);
     }, [journal?.color]);
+    final initialColor = useMemoized(
+      () => journal?.color ?? NoteColors.defaultJournalColor,
+      [journal?.id, journal?.color],
+    );
 
     final selectedColor = useState<Color>(noteColor);
 
@@ -101,10 +118,64 @@ class JournalExpandedView extends HookWidget {
       return saved;
     }
 
+    bool hasUnsavedChanges() {
+      final currentTitle = titleController.text;
+      final currentContent = jsonEncode(quillController.document.toDelta().toJson());
+      final currentFavourite = isFavourite.value;
+      final currentColor = selectedColor.value.toARGB32();
+
+      return currentTitle != initialTitle ||
+          currentContent != initialContent ||
+          currentFavourite != initialFavourite ||
+          currentColor != initialColor;
+    }
+
+    Future<void> onBackPressed() async {
+      if (!hasUnsavedChanges()) {
+        context.router.maybePop();
+        return;
+      }
+
+      final action = await showDialog<String>(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Unsaved changes'),
+            content: const Text('Do you want to save your changes?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop('cancel'),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop('discard'),
+                child: const Text('Discard'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop('save'),
+                child: const Text('Save'),
+              ),
+            ],
+          );
+        },
+      );
+
+      if (action == 'discard' && context.mounted) {
+        context.router.maybePop();
+        return;
+      }
+      if (action == 'save') {
+        final wasSaved = await saveNote(showSnackbar: false);
+        if (wasSaved && context.mounted) {
+          context.router.maybePop();
+        }
+      }
+    }
+
     void favouriteNote() {
       if (journal?.id != null) {
         final newFavouriteState = !isFavourite.value;
-        isFavourite.value = newFavouriteState; // Optimistic update
+        isFavourite.value = newFavouriteState;
         journalProvider.toggleFavourite(journal!.id!, newFavouriteState);
       }
     }
@@ -117,13 +188,7 @@ class JournalExpandedView extends HookWidget {
         backgroundColor: selectedColor.value,
         appBar: AppBar(
           leading: IconButton(
-            onPressed: () async {
-              final wasSaved = await saveNote(
-              );
-              if (wasSaved && context.mounted) {
-                context.router.maybePop();
-              }
-            },
+            onPressed: onBackPressed,
             icon: const Icon(Icons.arrow_back_ios_new_rounded),
           ),
           centerTitle: true,
@@ -138,13 +203,26 @@ class JournalExpandedView extends HookWidget {
               ),
               onPressed: favouriteNote,
             ),
-            IconButton(
+            PopupMenuButton<String>(
               icon: const Icon(Icons.more_vert),
-              onPressed: () async {
-                await saveNote(
-                  showSnackbar: true,
-                );
+              onSelected: (value) {
+                if (value == 'save') {
+                  unawaited(saveNote(showSnackbar: true));
+                }
+                if (value == 'share') {
+                  // Sharing action placeholder.
+                }
               },
+              itemBuilder: (context) => const [
+                PopupMenuItem<String>(
+                  value: 'save',
+                  child: Text('Save note'),
+                ),
+                PopupMenuItem<String>(
+                  value: 'share',
+                  child: Text('Share note'),
+                ),
+              ],
             ),
           ],
         ),

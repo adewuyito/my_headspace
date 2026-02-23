@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:my_headspace/core/constants/spacing.dart';
 import 'package:my_headspace/core/constants/styles.dart';
+import 'package:my_headspace/core/utils/date_time_formatting.dart';
+import 'package:my_headspace/core/utils/json_utils.dart';
 import 'package:my_headspace/features/journey/application/providers/journal_provider.dart';
 import 'package:my_headspace/features/journey/presentation/widget/journey_card.dart';
 import 'package:my_headspace/features/journey/presentation/widget/journey_date_divider.dart';
@@ -10,10 +12,7 @@ import 'package:my_headspace/gen/colors.gen.dart';
 import 'package:my_headspace/routes/app_navigator.dart';
 import 'package:my_headspace/routes/app_route.gr.dart';
 import 'package:my_headspace/service/service_locator.dart';
-import 'package:my_headspace/core/utils/json_utils.dart';
 import 'package:provider/provider.dart';
-
-import 'package:intl/intl.dart';
 
 @routePage
 class JourneyView extends HookWidget {
@@ -31,7 +30,7 @@ class JourneyView extends HookWidget {
       return null;
     }, []);
 
-    return ChangeNotifierProvider.value(
+    return ChangeNotifierProvider<JournalProvider>.value(
       value: _journalProvider,
       child: Consumer<JournalProvider>(
         builder: (context, provider, child) {
@@ -87,9 +86,30 @@ class JourneyView extends HookWidget {
 
                   const SizedBox(height: 16),
 
-                  _journalProvider.state.journals.isEmpty
-                      ? Center(child: Text("Empty journal"))
-                      : Expanded(
+                  if (provider.state.isLoading)
+                    const Expanded(
+                      child: Center(child: CircularProgressIndicator()),
+                    )
+                  else if (provider.state.errorMessage != null)
+                    Expanded(
+                      child: Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(provider.state.errorMessage!),
+                            const SizedBox(height: 12),
+                            TextButton(
+                              onPressed: provider.getAllJournals,
+                              child: const Text('Retry'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  else if (provider.state.journals.isEmpty)
+                    const Expanded(child: Center(child: Text("Empty journal")))
+                  else
+                    Expanded(
                           child: ListView.builder(
                             physics: const AlwaysScrollableScrollPhysics(),
                             itemCount: provider.state.journals.length,
@@ -125,20 +145,5 @@ class JourneyView extends HookWidget {
         },
       ),
     );
-  }
-}
-
-extension DateTimeFormatting on DateTime {
-  String toOrdinalString() {
-    // 1. Calculate the ordinal suffix
-    String suffix = 'th';
-    final int digit = day % 10;
-    if ((digit > 0 && digit < 4) && (day < 11 || day > 13)) {
-      suffix = ['st', 'nd', 'rd'][digit - 1];
-    }
-
-    // 2. Format the rest using the intl package
-    // Result: "10th Jan 2024"
-    return "$day$suffix ${DateFormat('MMM yyyy').format(this)}";
   }
 }

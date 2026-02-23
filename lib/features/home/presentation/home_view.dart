@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_headspace/core/constants/spacing.dart';
 import 'package:my_headspace/core/constants/styles.dart';
-import 'package:my_headspace/features/journey/application/providers/journal_provider.dart';
 import 'package:my_headspace/features/journey/data/local/database.dart';
 import 'package:my_headspace/gen/assets.gen.dart';
 import 'package:my_headspace/gen/colors.gen.dart';
@@ -16,7 +15,6 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final journal = serviceLocator.getIt<JournalProvider>(); // TODO: Remove the implimentations
     return Scaffold(
       body: Padding(
         padding: AppPadding.scaffoldSpacing,
@@ -89,12 +87,6 @@ class HomeView extends StatelessWidget {
                 child: Text(" off"),
               ),
 
-              ElevatedButton(
-                onPressed: () {
-                  journal.deleteDatabaseFile();
-                },
-                child: Text(" creat provider"),
-              ),
             ],
           ),
         ),

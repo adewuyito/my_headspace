@@ -18,7 +18,7 @@ class JourneyDateDivider extends StatelessWidget {
           color: ColorName.dateDividerBackground,
           borderRadius: BorderRadius.circular(9.r),
         ),
-        child: Text(date, style: hpStyles.m9,), // TODO: Fix Data
+        child: Text(date, style: hpStyles.m9),
       ),
     );
   }

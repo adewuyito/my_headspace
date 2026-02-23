@@ -1,6 +1,4 @@
-import 'dart:io';
 import 'package:my_headspace/core/constants/exceptions.dart';
-import 'package:path/path.dart' as p;
 import 'package:flutter/foundation.dart';
 import 'package:my_headspace/features/journey/application/usecases/delete_journal.dart';
 import 'package:my_headspace/features/journey/application/usecases/get_all_journals.dart';
@@ -11,7 +9,6 @@ import 'package:my_headspace/features/journey/domain/entities/journal_entity.dar
 import 'package:my_headspace/features/journey/domain/repositories/journal_repository.dart'
     as domain;
 import 'package:my_headspace/service/service_locator.dart';
-import 'package:path_provider/path_provider.dart';
 
 import 'journal_state.dart';
 
@@ -81,13 +78,11 @@ class JournalProvider extends ChangeNotifier {
   }
 
   Future<void> getJournal(String id) async {
-    // TODO: Implement use case.
     _state = _state.copyWith(isLoading: true);
     notifyListeners();
 
     try {
-      final journal = await _getJournal(id);
-      // For now, we'll just set loading to false.
+      await _getJournal(id);
       _state = _state.copyWith(isLoading: false);
     } catch (e) {
       _state = _state.copyWith(
@@ -162,14 +157,15 @@ class JournalProvider extends ChangeNotifier {
     } catch (_) {}
   }
 
-  // ! Development, Delete database
-  Future<void> deleteDatabaseFile() async {
-    final dbFolder = await getApplicationDocumentsDirectory();
-    final file = File(p.join(dbFolder.path, 'db.sqlite'));
+  void stopConnectivitySyncListener() {
+    try {
+      _journalRepository.stopConnectivityListener();
+    } catch (_) {}
+  }
 
-    if (await file.exists()) {
-      await file.delete();
-      debugPrint('Database deleted');
-    }
+  @override
+  void dispose() {
+    stopConnectivitySyncListener();
+    super.dispose();
   }
 }

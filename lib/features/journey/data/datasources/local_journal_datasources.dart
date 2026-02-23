@@ -38,7 +38,7 @@ class LocalJournalDatasourceImpl implements LocalJournalDatasource {
   @override
   Future<JournalId> saveEntry(JournalModel journal) async {
     final journalEntry = JournalDriftMapper.toDrift(journal);
-    await database.into(database.journals).insertOnConflictUpdate(journalEntry); // TODO: the methode call has typo error, fix for open-source
+    await database.into(database.journals).insertOnConflictUpdate(journalEntry);
     return journal.id!;
   }
 
@@ -56,7 +56,9 @@ class LocalJournalDatasourceImpl implements LocalJournalDatasource {
 
   @override
   Future<List<JournalModel>> getAllEntries() async {
-    final journals = await database.select(database.journals).get();
+    final journals = await (database.select(database.journals)
+          ..orderBy([(j) => OrderingTerm.desc(j.createdAt)]))
+        .get();
     return journals.map(JournalDriftMapper.fromDrift).toList();
   }
 

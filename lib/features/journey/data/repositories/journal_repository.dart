@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:my_headspace/features/journey/data/datasources/cloud_journal_datasources.dart';
 import 'package:my_headspace/features/journey/data/datasources/local_journal_datasources.dart';
@@ -8,7 +10,7 @@ import 'package:my_headspace/features/journey/domain/repositories/journal_reposi
 class JournalRepositoryImpl implements JournalRepository {
   final LocalJournalDatasource localDS;
   final CloudJournalDatasource cloudDS;
-  bool _isSyncListenerStarted = false;
+  StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
 
   JournalRepositoryImpl(this.localDS, this.cloudDS);
 
@@ -63,13 +65,6 @@ class JournalRepositoryImpl implements JournalRepository {
     if (journal == null || !journal.isBackedUp) {
       return;
     }
-
-    // TODO: Figure out what the smikims is this
-    /* try {
-      await cloudDS.toggleFavourite(value, id);
-    } catch (_) {
-      // Preserve local-first behavior: favourite state still updates locally.
-    } */
   }
 
   @override
@@ -83,9 +78,6 @@ class JournalRepositoryImpl implements JournalRepository {
     final unsyncedNotes = await localDS.getUnsyncedEntry();
     if (unsyncedNotes.isEmpty) return;
 
-    // TODO: Show a snackbar or somthing
-    // print('Syncing ${unsyncedNotes.length} unsynced records...');
-
     final uploadResult = await cloudDS.syncAllEntries(unsyncedNotes);
 
     if (uploadResult) {
@@ -97,10 +89,9 @@ class JournalRepositoryImpl implements JournalRepository {
 
   @override
   void startConnectivityListener() {
-    if (_isSyncListenerStarted) return;
-    _isSyncListenerStarted = true;
+    if (_connectivitySubscription != null) return;
 
-    Connectivity().onConnectivityChanged.listen(
+    _connectivitySubscription = Connectivity().onConnectivityChanged.listen(
       (result) {
         final hasConnection = result.any((r) => r != ConnectivityResult.none);
         if (hasConnection) {
@@ -111,5 +102,11 @@ class JournalRepositoryImpl implements JournalRepository {
         // Ignore connectivity stream plugin errors during startup/reload.
       },
     );
+  }
+
+  @override
+  void stopConnectivityListener() {
+    _connectivitySubscription?.cancel();
+    _connectivitySubscription = null;
   }
 }

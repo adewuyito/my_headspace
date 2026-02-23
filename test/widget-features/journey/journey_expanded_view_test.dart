@@ -87,7 +87,9 @@ void main() {
     await pumpExpandedView(tester);
 
     await tester.tap(find.byIcon(Icons.more_vert));
-    await tester.pump();
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Save note'));
+    await tester.pumpAndSettle();
 
     expect(find.text('Please add a title'), findsOneWidget);
     expect(provider.state.journals, isEmpty);
@@ -98,6 +100,8 @@ void main() {
 
     await tester.enterText(find.byType(TextField).first, 'Saved title');
     await tester.tap(find.byIcon(Icons.more_vert));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Save note'));
     await tester.pumpAndSettle();
 
     expect(find.text('Note saved!'), findsOneWidget);
@@ -125,6 +129,8 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.tap(find.byIcon(Icons.more_vert));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Save note'));
       await tester.pumpAndSettle();
 
       expect(find.text('Note saved!'), findsOneWidget);

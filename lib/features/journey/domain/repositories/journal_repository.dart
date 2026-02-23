@@ -8,4 +8,5 @@ abstract class JournalRepository {
   Future<void> toggleFavourite(bool value, String id);
   Future<void> syncPendingData();
   void startConnectivityListener();
+  void stopConnectivityListener();
 }
