@@ -79,7 +79,7 @@ class EditorToolbar extends StatelessWidget {
                                   ? Colors.transparent
                                   : color,
                               border: isSelected == true
-                                  ? BoxBorder.all(color: color, width: 2)
+                                  ? Border.all(color: color, width: 2)
                                   : null,
                               shape: BoxShape.circle,
                             ),

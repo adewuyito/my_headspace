@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:my_headspace/features/journey/data/local/database.dart';
 import 'package:my_headspace/features/journey/data/local/journal_drift_mapper.dart';
 import 'package:my_headspace/features/journey/data/model/journal_model.dart';
+import 'package:uuid/uuid.dart';
 
 abstract interface class LocalJournalDatasource {
   Future<JournalId> saveEntry(JournalModel journal);
@@ -37,9 +38,20 @@ class LocalJournalDatasourceImpl implements LocalJournalDatasource {
 
   @override
   Future<JournalId> saveEntry(JournalModel journal) async {
-    final journalEntry = JournalDriftMapper.toDrift(journal);
+    final id = journal.id ?? const Uuid().v4();
+    final journalEntry = JournalDriftMapper.toDrift(
+      JournalModel(
+        id: id,
+        title: journal.title,
+        content: journal.content,
+        createdAt: journal.createdAt,
+        isFavourite: journal.isFavourite,
+        color: journal.color,
+        isBackedUp: journal.isBackedUp,
+      ),
+    );
     await database.into(database.journals).insertOnConflictUpdate(journalEntry);
-    return journal.id!;
+    return id;
   }
 
   @override

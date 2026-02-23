@@ -24,7 +24,7 @@ class Journals extends Table {
 @DriftDatabase(tables: [Journals])
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
-  AppDatabase.forTesting(QueryExecutor executor) : super(executor);
+  AppDatabase.forTesting(super.executor);
 
   @override
   int get schemaVersion => 2;
