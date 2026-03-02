@@ -1,10 +1,13 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:drift_db_viewer/drift_db_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_headspace/core/constants/spacing.dart';
 import 'package:my_headspace/core/constants/styles.dart';
+import 'package:my_headspace/features/journey/data/local/database.dart';
 import 'package:my_headspace/gen/assets.gen.dart';
 import 'package:my_headspace/gen/colors.gen.dart';
+import 'package:my_headspace/service/service_locator.dart';
 
 @routePage
 class HomeView extends StatelessWidget {
@@ -72,6 +75,18 @@ class HomeView extends StatelessWidget {
                   ],
                 ),
               ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          DriftDbViewer(serviceLocator.getIt<AppDatabase>()),
+                    ),
+                  );
+                },
+                child: Text(" off"),
+              ),
+
             ],
           ),
         ),

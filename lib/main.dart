@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:my_headspace/features/auth/application/providers/create_account_provider.dart';
 import 'package:my_headspace/features/auth/domain/repository/auth_repository.dart';
@@ -5,6 +7,7 @@ import 'package:my_headspace/firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:my_headspace/app.dart';
 import 'package:my_headspace/features/home/application/providers/personalisation_provider.dart';
+import 'package:my_headspace/features/journey/application/providers/journal_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:my_headspace/routes/app_route.dart';
 import 'package:my_headspace/routes/app_route_guard.dart';
@@ -12,7 +15,7 @@ import 'package:my_headspace/service/service_locator.dart';
 import 'package:my_headspace/features/auth/application/providers/auth_provider.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  final binding = WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   serviceLocator.configure();
@@ -41,4 +44,10 @@ void main() async {
       child: const MainApp(),
     ),
   );
+
+  binding.addPostFrameCallback((_) {
+    final journalProvider = serviceLocator.getIt<JournalProvider>();
+    journalProvider.startConnectivitySyncListener();
+    unawaited(journalProvider.syncPendingData());
+  });
 }

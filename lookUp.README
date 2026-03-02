@@ -1,0 +1,99 @@
+# my_headspace AI Lookup
+
+## Project snapshot
+- Type: Flutter mobile app
+- Primary domain: mental wellness journaling + auth onboarding
+- Architecture style: feature-first folders with layered boundaries (presentation, application, domain, data)
+- State management: `provider` + `ChangeNotifier`
+- Dependency injection: `get_it` service locator
+- Navigation: `auto_route`
+- Backend: Firebase Auth + Cloud Firestore
+- Local persistence: Drift (SQLite)
+- Rich text editor: Flutter Quill
+
+## Entry points
+- App bootstrap: `lib/main.dart`
+- Root widget: `lib/app.dart`
+- Route config: `lib/routes/app_route.dart`
+- Route guard: `lib/routes/app_route_guard.dart`
+- DI registration: `lib/service/service_locator.dart`
+
+## Top-level feature map
+- `lib/features/auth`
+  - Handles onboarding, signup, login, reset password, verify mail.
+  - Core runtime state in `AuthProvider` and `CreateAccountProvider`.
+  - Auth data access through `AuthRepository` -> `AuthRemoteDatasources`.
+- `lib/features/journey`
+  - Journal CRUD and favorite toggling.
+  - Uses use-cases (`save/get/delete/getAll/toggleFavourite`) over `JournalRepository` abstraction.
+  - Repository implementation bridges local drift datasource and cloud firestore datasource.
+- `lib/features/home`
+  - Home/personalization UI and reminder preferences provider.
+- `lib/features/navigation`
+  - Bottom tab navigator (`ApplicationNavigatorView`).
+- `lib/features/profile`
+  - Profile/settings UI with sign-out trigger.
+
+## Data flow (journal)
+1. UI writes in `JournalExpandedView` using Quill editor.
+2. Content is serialized as Delta JSON string.
+3. `JournalProvider.saveJournal(...)` triggers `SaveJournal` use-case.
+4. Use-case calls domain repository interface.
+5. `JournalRepositoryImpl` writes to local Drift DB by default.
+6. Optional cloud backup path also writes to Firestore.
+
+## Data flow (auth)
+1. Auth screens call `AuthProvider`.
+2. `AuthProvider` delegates sign-in/sign-up to `AuthRepository`.
+3. Repository delegates to Firebase via `AuthRemoteDatasources`.
+4. Firebase auth state stream updates `AuthProvider` state.
+5. `AuthGuard` protects app shell routes using `authProvider.isAuthenticated`.
+
+## Storage model highlights
+- Journal entity fields: `id`, `title`, `content`, `createdAt`, `color`, `isFavourite`, `isBackedUp`.
+- Local table: `Journals` in `lib/features/journey/data/local/database.dart`.
+- Firestore collection: `journals`.
+- User profile document writes happen via `saveUserDataAfterLogin` to user collection.
+
+## UI/navigation behavior
+- App route graph includes onboarding, auth flow, permission screens, main tab shell, and journal editor.
+- Main protected shell route: `ApplicationNavigatorRoute` (guarded).
+- Bottom tabs currently configured as: Home, Discovery, Journey, Profile.
+- Discovery tab currently points to `HomeRoute` (same as Home).
+
+## Tooling and generated code
+- Uses codegen for:
+  - `auto_route` (`app_route.gr.dart`)
+  - `freezed/json_serializable` models
+  - `drift` database files
+  - `flutter_gen` assets/colors/fonts
+- Build helpers are configured via `build_runner`.
+
+## Testing coverage (current)
+- Unit tests mainly target auth providers and enums:
+  - `test/unit-features/auth/...`
+- Widget tests mainly target auth screens:
+  - `test/widget-features/auth/...`
+- Journal feature test coverage is limited.
+
+## Known caveats for AI agents
+- Service locator mixes singleton/lazy registrations; provider instances are sometimes pulled directly from locator in widgets.
+- Some TODO comments and typos indicate in-progress code (for example `profile_veiw.dart`, comments in home/local datasource).
+- `JourneyView` has a search field UI, but filtering logic is not implemented.
+- `getJournal(...)` in `JournalProvider` fetches a journal but does not store it in state yet.
+- Cloud journal datasource exists, but normal save path defaults to local-only (`backupToCloud: false`).
+
+## Quick command context
+- Package file: `pubspec.yaml`
+- Tests: `flutter test`
+- Typical codegen: `dart run build_runner build --delete-conflicting-outputs`
+
+## If you are another AI agent
+- Start with these files in order:
+1. `lib/main.dart`
+2. `lib/service/service_locator.dart`
+3. `lib/routes/app_route.dart`
+4. `lib/features/auth/application/providers/auth_provider.dart`
+5. `lib/features/journey/application/providers/journal_provider.dart`
+6. `lib/features/journey/data/repositories/journal_repository.dart`
+- Assume this is an actively evolving app and validate behavior from provider + route wiring before refactors.

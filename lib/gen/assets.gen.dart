@@ -59,6 +59,10 @@ class $AssetsIconsGen {
   /// File path: assets/icons/minus_icon.svg
   SvgGenImage get minusIcon => const SvgGenImage('assets/icons/minus_icon.svg');
 
+  /// File path: assets/icons/notes_divider.svg
+  SvgGenImage get notesDivider =>
+      const SvgGenImage('assets/icons/notes_divider.svg');
+
   /// File path: assets/icons/notifications_icon.svg
   SvgGenImage get notificationsIcon =>
       const SvgGenImage('assets/icons/notifications_icon.svg');
@@ -110,6 +114,7 @@ class $AssetsIconsGen {
     journeyIcon,
     likeIcon,
     minusIcon,
+    notesDivider,
     notificationsIcon,
     personalizationIcon,
     plusIcon,
