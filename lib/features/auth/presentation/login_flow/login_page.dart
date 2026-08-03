@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:my_headspace/core/utils/input_validator.dart';
+import 'package:my_headspace/core/utils/snackbar_utils.dart';
 import 'package:my_headspace/features/auth/application/providers/auth_provider.dart';
 import 'package:my_headspace/gen/assets.gen.dart';
 import 'package:my_headspace/gen/colors.gen.dart';
@@ -41,12 +42,9 @@ class LoginPage extends HookWidget {
       if (success) {
         context.router.replaceAll([const ApplicationNavigatorRoute()]);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          // TODO: Use snackbar util
-          SnackBar(
-            content: Text(authProvider.errorMessage ?? 'Login failed'),
-            backgroundColor: Colors.red,
-          ),
+        SnackbarUtils.showError(
+          context,
+          authProvider.errorMessage ?? 'Login failed',
         );
       }
     }
@@ -116,21 +114,6 @@ class LoginPage extends HookWidget {
                           ? const CircularProgressIndicator()
                           : Text("Next"),
                     ),
-                  ),
-                  const SizedBox(width: 25),
-
-                  // TODO: Remove this debug-only autofill during final quality check before release.
-                  GestureDetector(
-                    onTap: () {
-                      if (kDebugMode) {
-                        emailController.text = 'test123@gmail.com';
-                        passwordController.text = 'password123';
-                        if (!_isLoading) {
-                          _loginUser();
-                        }
-                      }
-                    },
-                    child: Assets.icons.fingerprint.svg(),
                   ),
                 ],
               ),

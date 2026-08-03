@@ -6,6 +6,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_headspace/core/constants/styles.dart';
 import 'package:my_headspace/core/utils/input_validator.dart';
+import 'package:my_headspace/core/utils/snackbar_utils.dart';
 import 'package:my_headspace/features/auth/application/providers/auth_provider.dart';
 import 'package:my_headspace/features/auth/application/providers/create_account_provider.dart';
 import 'package:my_headspace/gen/assets.gen.dart';
@@ -48,21 +49,17 @@ class CreateAccountPage2 extends HookWidget {
         passwordController.text,
       );
 
-      // TODO!: Save user data on success to firestore
-
       if (!context.mounted) return;
 
       if (success) {
+        createAccountProvider.clearUserData();
         context.router.replaceAll([const ApplicationNavigatorRoute()]);
 
         // TODO!: Move through the permissions view if never done
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          // TODO: Use snackbar util
-          SnackBar(
-            content: Text(authProvider.errorMessage ?? 'Login failed'),
-            backgroundColor: Colors.red,
-          ),
+        SnackbarUtils.showError(
+          context,
+          authProvider.errorMessage ?? 'Login failed',
         );
       }
     }

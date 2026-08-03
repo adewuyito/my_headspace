@@ -6,6 +6,7 @@ import 'package:flutter_quill/flutter_quill.dart';
 import 'package:my_headspace/core/constants/note_colors.dart';
 import 'dart:convert';
 import 'package:my_headspace/core/constants/styles.dart';
+import 'package:my_headspace/core/utils/snackbar_utils.dart';
 import 'package:my_headspace/features/journey/application/providers/journal_provider.dart';
 import 'package:my_headspace/features/journey/domain/entities/journal_entity.dart';
 import 'package:my_headspace/features/journey/presentation/widget/editor_heading_textfield.dart';
@@ -85,9 +86,7 @@ class JournalExpandedView extends HookWidget {
       final title = titleController.text;
 
       if (title.trim().isEmpty) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Please add a title')));
+        SnackbarUtils.showWarning(context, 'Please add a title');
         return false;
       }
 
@@ -106,14 +105,10 @@ class JournalExpandedView extends HookWidget {
       );
 
       if (showSnackbar && context.mounted && saved) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Note saved!')));
+        SnackbarUtils.showSuccess(context, 'Note saved!');
       }
       if (context.mounted && !saved) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Unable to save note. Please try again.')),
-        );
+        SnackbarUtils.showError(context, 'Unable to save note. Please try again.');
       }
       return saved;
     }

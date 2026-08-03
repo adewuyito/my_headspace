@@ -21,13 +21,33 @@ class Journals extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-@DriftDatabase(tables: [Journals])
+@DataClassName('SyncJob')
+class SyncQueue extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get journalId => text()();
+  TextColumn get operation => text()();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+}
+
+@DriftDatabase(tables: [Journals, SyncQueue])
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+        onCreate: (Migrator m) {
+          return m.createAll();
+        },
+        onUpgrade: (Migrator m, int from, int to) async {
+          if (from < 3) {
+            await m.createTable(syncQueue);
+          }
+        },
+      );
 
   Future<List<JournalEntry>> search(String query) {
     if (query.trim().isEmpty) {

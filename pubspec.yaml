@@ -35,7 +35,7 @@ dependencies:
   firebase_auth: ^6.1.2
 
   # Text Handling
-  flutter_quill: ^11.5.0
+  flutter_quill: 11.5.1
   flutter_quill_extensions: ^11.0.0
   flutter_localizations:
     sdk: flutter
@@ -54,7 +54,8 @@ dependencies:
 
   # Database viewer
   drift_db_viewer: ^2.1.0
-  connectivity_plus: ^7.0.0
+  # 7.1.x requires Xcode 26.1.1+ for macOS satellite connectivity APIs.
+  connectivity_plus: 7.0.0
   
 
   
@@ -83,6 +84,8 @@ flutter_gen:
 
 flutter:
   uses-material-design: true
+  config:
+    enable-swift-package-manager: true
 
   assets:
     - assets/icons/

@@ -16,6 +16,7 @@ import 'package:my_headspace/features/journey/data/datasources/cloud_journal_dat
 import 'package:my_headspace/features/journey/data/datasources/local_journal_datasources.dart';
 import 'package:my_headspace/features/journey/data/repositories/journal_repository.dart';
 import 'package:my_headspace/features/journey/data/local/database.dart';
+import 'package:my_headspace/features/journey/application/services/sync_service.dart';
 import 'package:my_headspace/features/journey/domain/repositories/journal_repository.dart'
     as domain;
 import 'package:my_headspace/routes/app_route_guard.dart';
@@ -68,6 +69,10 @@ class ServiceLocator {
         _getit<LocalJournalDatasource>(),
         _getit<CloudJournalDatasource>(),
       ),
+    );
+
+    _getit.registerLazySingleton<SyncService>(
+      () => SyncService(_getit<domain.JournalRepository>()),
     );
 
     // ~ Domain Usecases

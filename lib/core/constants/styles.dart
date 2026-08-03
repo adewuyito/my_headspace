@@ -124,6 +124,12 @@ class _AppStyles {
     fontWeight: FontWeight.w600,
   );
 
+  final sb12 = const TextStyle(
+    fontSize: 12,
+    height: 1,
+    fontWeight: FontWeight.w600,
+  );
+
   final sb14 = const TextStyle(
     fontSize: 14,
     height: 1.45,

@@ -1,32 +1,32 @@
 {
-    "dart.flutterSdkPath": ".fvm/flutter_sdk",
-    "search.exclude": {
-        "**/.fvm": true,
-        "**/build/": true
-    },
-    "files.watcherExclude": {
-        "**/.fvm": true,
-        "**/.git": true,
-        "**/.svn": true,
-        "**/.hg": true,
-        "**/.DS_Store": true,
-        "**/Thumbs.db": true,
-        "**/flutter/ephemeral": true,
-        "**/Flutter/ephemeral": true,
-        "**/.symlinks": true,
-        "**/.plugin_symlinks": true,
-        "**/build/": true
-    },
-    "files.exclude": {
-        "**/.git": true,
-        "**/.svn": true,
-        "**/.hg": true,
-        "**/.DS_Store": true,
-        "**/Thumbs.db": true,
-        "**/flutter/ephemeral": true,
-        "**/Flutter/ephemeral": true,
-        "**/.symlinks": true,
-        "**/.plugin_symlinks": true,
-        "**/build/": true
-    },
+  "dart.flutterSdkPath": ".fvm/versions/3.44.0",
+  "search.exclude": {
+    "**/.fvm": true,
+    "**/build/": true
+  },
+  "files.watcherExclude": {
+    "**/.fvm": true,
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    "**/flutter/ephemeral": true,
+    "**/Flutter/ephemeral": true,
+    "**/.symlinks": true,
+    "**/.plugin_symlinks": true,
+    "**/build/": true
+  },
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    "**/flutter/ephemeral": true,
+    "**/Flutter/ephemeral": true,
+    "**/.symlinks": true,
+    "**/.plugin_symlinks": true,
+    "**/build/": true
+  }
 }

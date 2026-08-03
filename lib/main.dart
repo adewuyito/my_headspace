@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:my_headspace/app.dart';
 import 'package:my_headspace/features/home/application/providers/personalisation_provider.dart';
 import 'package:my_headspace/features/journey/application/providers/journal_provider.dart';
+import 'package:my_headspace/features/journey/application/services/sync_service.dart';
 import 'package:provider/provider.dart';
 import 'package:my_headspace/routes/app_route.dart';
 import 'package:my_headspace/routes/app_route_guard.dart';
@@ -46,8 +47,6 @@ void main() async {
   );
 
   binding.addPostFrameCallback((_) {
-    final journalProvider = serviceLocator.getIt<JournalProvider>();
-    journalProvider.startConnectivitySyncListener();
-    unawaited(journalProvider.syncPendingData());
+    serviceLocator.getIt<SyncService>().initialize();
   });
 }

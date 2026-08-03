@@ -59,6 +59,8 @@ class AuthProvider extends ChangeNotifier {
 
       await _authRepo.loginUserWithEmail(email: email, password: password);
 
+      _authState = _authState.copyWith(isLoading: false);
+      notifyListeners();
       return true;
     } on FirebaseAuthException catch (e) {
       _errorMessage = AuthExceptions.handleAuthException(e);
@@ -93,6 +95,8 @@ class AuthProvider extends ChangeNotifier {
         await _authRepo.updateUser(data: userData, userid: credential.uid);
       }
 
+      _authState = _authState.copyWith(isLoading: false);
+      notifyListeners();
       return true;
     } on FirebaseAuthException catch (e) {
       _errorMessage = AuthExceptions.handleAuthException(e);

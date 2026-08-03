@@ -4,13 +4,13 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:my_headspace/features/journey/data/datasources/cloud_journal_datasources.dart';
 import 'package:my_headspace/features/journey/data/datasources/local_journal_datasources.dart';
 import 'package:my_headspace/features/journey/data/model/journal_mapper.dart';
+import 'package:my_headspace/features/journey/data/model/journal_model.dart';
 import 'package:my_headspace/features/journey/domain/entities/journal_entity.dart';
 import 'package:my_headspace/features/journey/domain/repositories/journal_repository.dart';
 
 class JournalRepositoryImpl implements JournalRepository {
   final LocalJournalDatasource localDS;
   final CloudJournalDatasource cloudDS;
-  StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
 
   JournalRepositoryImpl(this.localDS, this.cloudDS);
 
@@ -31,24 +31,12 @@ class JournalRepositoryImpl implements JournalRepository {
   @override
   Future<void> saveJournal(
     Journal journal, {
-    bool backupToCloud = false,
+    bool backupToCloud = false, // Ignored: Cloud sync is now handled asynchronously by SyncService
   }) async {
     final localModel = JournalMapper.fromEntity(
       journal.copyWith(isBackedUp: false),
     );
     await localDS.saveEntry(localModel);
-
-    if (backupToCloud) {
-      final cloudModel = JournalMapper.fromEntity(
-        journal.copyWith(isBackedUp: true),
-      );
-      try {
-        await cloudDS.saveEntry(cloudModel);
-        await localDS.saveEntry(cloudModel);
-      } catch (_) {
-        // Preserve local-first behavior: note remains saved locally even if backup fails.
-      }
-    }
   }
 
   @override
@@ -60,11 +48,7 @@ class JournalRepositoryImpl implements JournalRepository {
   @override
   Future<void> toggleFavourite(bool value, String id) async {
     await localDS.toggleFavourite(value, id);
-
-    final journal = await localDS.getEntry(id);
-    if (journal == null || !journal.isBackedUp) {
-      return;
-    }
+    // Cloud sync logic is now completely handled by SyncService picking up the job
   }
 
   @override
@@ -75,38 +59,69 @@ class JournalRepositoryImpl implements JournalRepository {
     );
     if (!hasConnection) return;
 
-    final unsyncedNotes = await localDS.getUnsyncedEntry();
-    if (unsyncedNotes.isEmpty) return;
+    final pendingJobs = await localDS.getPendingSyncJobs();
+    if (pendingJobs.isEmpty) return;
 
-    final uploadResult = await cloudDS.syncAllEntries(unsyncedNotes);
+    final saveJobs = <dynamic>[]; // Use dynamic to avoid import issues if SyncJob isn't exported properly, but it should be available. Let's use final job.
+    final deleteJobs = <dynamic>[];
 
-    if (uploadResult) {
-      for (final note in unsyncedNotes) {
-        await localDS.markAsBackedUp(note.id!);
+    for (final job in pendingJobs) {
+      if (job.operation == 'DELETE') {
+        deleteJobs.add(job);
+      } else if (job.operation == 'SAVE') {
+        saveJobs.add(job);
+      }
+    }
+
+    // Process deletes
+    for (final job in deleteJobs) {
+      try {
+        await cloudDS.deleteEntry(job.journalId);
+        await localDS.removeSyncJob(job.id);
+      } catch (_) {}
+    }
+
+    // Process saves
+    if (saveJobs.isNotEmpty) {
+      final journalsToSync = <JournalModel>[];
+      final processedJobs = <dynamic>[];
+
+      for (final job in saveJobs) {
+        final localEntry = await localDS.getEntry(job.journalId);
+        if (localEntry != null) {
+          journalsToSync.add(localEntry);
+          processedJobs.add(job);
+        } else {
+          // Entry deleted locally before sync could run; safely discard job
+          await localDS.removeSyncJob(job.id);
+        }
+      }
+
+      if (journalsToSync.isNotEmpty) {
+        // Use a map to ensure we only send unique journals if there are duplicate jobs for the same journal
+        final uniqueJournals = List<JournalModel>.from(
+          { for (var note in journalsToSync) note.id! : note }.values
+        );
+        
+        final uploadResult = await cloudDS.syncAllEntries(uniqueJournals);
+
+        if (uploadResult) {
+          await Future.wait([
+            ...uniqueJournals.map((note) => localDS.markAsBackedUp(note.id!)),
+            ...processedJobs.map((job) => localDS.removeSyncJob(job.id)),
+          ]);
+        }
       }
     }
   }
 
   @override
   void startConnectivityListener() {
-    if (_connectivitySubscription != null) return;
-
-    _connectivitySubscription = Connectivity().onConnectivityChanged.listen(
-      (result) {
-        final hasConnection = result.any((r) => r != ConnectivityResult.none);
-        if (hasConnection) {
-          syncPendingData();
-        }
-      },
-      onError: (_) {
-        // Ignore connectivity stream plugin errors during startup/reload.
-      },
-    );
+    // Stub implementation: Logic moved to dedicated SyncService
   }
 
   @override
   void stopConnectivityListener() {
-    _connectivitySubscription?.cancel();
-    _connectivitySubscription = null;
+    // Stub implementation: Logic moved to dedicated SyncService
   }
 }

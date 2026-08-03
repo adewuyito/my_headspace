@@ -12,6 +12,9 @@ abstract interface class LocalJournalDatasource {
   Future<void> markAsBackedUp(JournalId id);
   Future<List<JournalModel>> getAllEntries();
   Future<List<JournalModel>> getUnsyncedEntry();
+  Future<List<SyncJob>> getPendingSyncJobs();
+  Future<void> removeSyncJob(int jobId);
+  Future<void> removeSyncJobsForJournal(String journalId);
 }
 
 class LocalJournalDatasourceImpl implements LocalJournalDatasource {
@@ -20,9 +23,16 @@ class LocalJournalDatasourceImpl implements LocalJournalDatasource {
   LocalJournalDatasourceImpl(this.database);
 
   @override
-  Future<void> deleteEntry(JournalId id) {
-    return (database.delete(database.journals)..where((j) => j.id.equals(id)))
-        .go();
+  Future<void> deleteEntry(JournalId id) async {
+    await database.transaction(() async {
+      await (database.delete(database.journals)..where((j) => j.id.equals(id))).go();
+      await database.into(database.syncQueue).insert(
+        SyncQueueCompanion.insert(
+          journalId: id,
+          operation: 'DELETE',
+        ),
+      );
+    });
   }
 
   @override
@@ -50,14 +60,30 @@ class LocalJournalDatasourceImpl implements LocalJournalDatasource {
         isBackedUp: journal.isBackedUp,
       ),
     );
-    await database.into(database.journals).insertOnConflictUpdate(journalEntry);
+    await database.transaction(() async {
+      await database.into(database.journals).insertOnConflictUpdate(journalEntry);
+      await database.into(database.syncQueue).insert(
+        SyncQueueCompanion.insert(
+          journalId: id,
+          operation: 'SAVE',
+        ),
+      );
+    });
     return id;
   }
 
   @override
-  Future<void> toggleFavourite(bool value, String id) {
-    return (database.update(database.journals)..where((j) => j.id.equals(id)))
-        .write(JournalsCompanion(isFavourite: Value(value)));
+  Future<void> toggleFavourite(bool value, String id) async {
+    await database.transaction(() async {
+      await (database.update(database.journals)..where((j) => j.id.equals(id)))
+          .write(JournalsCompanion(isFavourite: Value(value)));
+      await database.into(database.syncQueue).insert(
+        SyncQueueCompanion.insert(
+          journalId: id,
+          operation: 'SAVE',
+        ),
+      );
+    });
   }
 
   @override
@@ -80,5 +106,22 @@ class LocalJournalDatasourceImpl implements LocalJournalDatasource {
           ..where((j) => j.isBackedUp.equals(false)))
         .get();
     return journals.map(JournalDriftMapper.fromDrift).toList();
+  }
+
+  @override
+  Future<List<SyncJob>> getPendingSyncJobs() {
+    return (database.select(database.syncQueue)
+          ..orderBy([(q) => OrderingTerm.asc(q.createdAt)]))
+        .get();
+  }
+
+  @override
+  Future<void> removeSyncJob(int jobId) {
+    return (database.delete(database.syncQueue)..where((q) => q.id.equals(jobId))).go();
+  }
+
+  @override
+  Future<void> removeSyncJobsForJournal(String journalId) {
+    return (database.delete(database.syncQueue)..where((q) => q.journalId.equals(journalId))).go();
   }
 }

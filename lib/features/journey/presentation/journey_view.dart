@@ -27,8 +27,13 @@ class JourneyView extends HookWidget {
     useEffect(() {
       _journalProvider.getAllJournals();
 
-      return null;
-    }, []);
+      void listener() {
+        _journalProvider.setSearchQuery(searchTextController.text);
+      }
+      searchTextController.addListener(listener);
+
+      return () => searchTextController.removeListener(listener);
+    }, [searchTextController]);
 
     return ChangeNotifierProvider<JournalProvider>.value(
       value: _journalProvider,
@@ -106,15 +111,23 @@ class JourneyView extends HookWidget {
                         ),
                       ),
                     )
-                  else if (provider.state.journals.isEmpty)
-                    const Expanded(child: Center(child: Text("Empty journal")))
+                  else if (provider.state.filteredJournals.isEmpty)
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          provider.state.searchQuery.isNotEmpty 
+                              ? "No results found" 
+                              : "Empty journal"
+                        )
+                      )
+                    )
                   else
                     Expanded(
                           child: ListView.builder(
                             physics: const AlwaysScrollableScrollPhysics(),
-                            itemCount: provider.state.journals.length,
+                            itemCount: provider.state.filteredJournals.length,
                             itemBuilder: (context, index) {
-                              final journal = provider.state.journals[index];
+                              final journal = provider.state.filteredJournals[index];
                               Color cardColor = Color(journal.color);
                               return Column(
                                 children: [

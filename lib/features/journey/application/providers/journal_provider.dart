@@ -1,5 +1,7 @@
 import 'package:my_headspace/core/constants/exceptions.dart';
 import 'package:flutter/foundation.dart';
+import 'package:get_it/get_it.dart';
+import 'package:my_headspace/features/journey/application/services/sync_service.dart';
 import 'package:my_headspace/features/journey/application/usecases/delete_journal.dart';
 import 'package:my_headspace/features/journey/application/usecases/get_all_journals.dart';
 import 'package:my_headspace/features/journey/application/usecases/get_journal.dart';
@@ -63,8 +65,18 @@ class JournalProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await _saveJournal(journal, backupToCloud: backupToCloud);
+      // Save locally (force backupToCloud to false so local save is fast and non-blocking)
+      await _saveJournal(journal, backupToCloud: false);
       await _internalGetAllJournals();
+
+      // Trigger the background SyncService asynchronously
+      if (GetIt.instance.isRegistered<SyncService>()) {
+        final syncService = GetIt.instance<SyncService>();
+        syncService.triggerSync();
+      } else {
+        debugPrint('[JournalProvider] SyncService not registered, skipping sync trigger.');
+      }
+
       return true;
     } catch (e) {
       _state = _state.copyWith(
@@ -82,8 +94,8 @@ class JournalProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await _getJournal(id);
-      _state = _state.copyWith(isLoading: false);
+      final journal = await _getJournal(id);
+      _state = _state.copyWith(isLoading: false, currentJournal: journal);
     } catch (e) {
       _state = _state.copyWith(
         isLoading: false,
@@ -117,6 +129,18 @@ class JournalProvider extends ChangeNotifier {
     await _internalGetAllJournals();
 
     _state = _state.copyWith(isLoading: false);
+    notifyListeners();
+  }
+
+  void setSearchQuery(String query) {
+    if (_state.searchQuery != query) {
+      _state = _state.copyWith(searchQuery: query);
+      notifyListeners();
+    }
+  }
+
+  void clearCurrentJournal() {
+    _state = _state.copyWith(currentJournal: null);
     notifyListeners();
   }
 

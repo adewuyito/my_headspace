@@ -15,6 +15,8 @@ import 'package:my_headspace/features/auth/presentation/get_started_page.dart'
     as _i5;
 import 'package:my_headspace/features/auth/presentation/login_flow/login_page.dart'
     as _i9;
+import 'package:my_headspace/features/discovery/presentation/discovery_view.dart'
+    as _i25;
 import 'package:my_headspace/features/auth/presentation/onboarding/onboarding_first_tab.dart'
     as _i11;
 import 'package:my_headspace/features/auth/presentation/onboarding/onboarding_second_tab.dart'
@@ -131,6 +133,22 @@ class GetStartedRoute extends _i22.PageRouteInfo<void> {
     name,
     builder: (data) {
       return const _i5.GetStartedPage();
+    },
+  );
+}
+
+/// generated route for
+/// [_i25.DiscoveryView]
+class DiscoveryRoute extends _i22.PageRouteInfo<void> {
+  const DiscoveryRoute({List<_i22.PageRouteInfo>? children})
+    : super(DiscoveryRoute.name, initialChildren: children);
+
+  static const String name = 'DiscoveryRoute';
+
+  static _i22.PageInfo page = _i22.PageInfo(
+    name,
+    builder: (data) {
+      return const _i25.DiscoveryView();
     },
   );
 }

@@ -41,6 +41,7 @@ class AppRouter extends RootStackRouter {
       guards: [AuthGuard()],
       children: [
         AutoRoute(page: HomeRoute.page),
+        AutoRoute(page: DiscoveryRoute.page),
         AutoRoute(page: JourneyRoute.page),
         AutoRoute(page: ProfileRoute.page),
       ],
